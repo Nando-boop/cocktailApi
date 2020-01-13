@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang='eng'>
+    <head>
+        <title>Ingredient Search</title>
+        <meta charset="utf-8">
+        <script src='jquery.min.js'></script>
+        <script src='binarySearchTree.js'></script>
+        <script src='script.js'></script>
+        <script src='addIngredients.js'></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class='navBar'>
+            <a href='index.html'>Logout</a>
+            <a href='ingredientUser.html'>My Drinks</a>
+            <a href='pantry.html'>Pantry</a>
+            <a href='index.html'>Favorites</a>
+            <a href='index.html'>Shopping List</a>
+        </div>
+        <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+        <h3>Select the ingredients that you have at home</h3>
+        <button id='save'>save</button>
+        <input id='ingredientBox' placeholder="search for ingredients">
+        <button id='ingredientSearch'>Go!</button>
+        <ul id='ingredientCards'></ul>
+    </body>
+</html>
