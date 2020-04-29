@@ -1,40 +1,54 @@
 //Creates a list of drinks from the api with photo and title
 var loggedInId = window.opener.loggedInId;
 
-$(document).ready(function()
-{
-    cardSelector();
-});
 function cardSelector()
 {
+    $('#loader').remove();  //removes loading screen when function called
+
     $('#ingredientCards').hover(function()
     {   
-        $(this).find('ul').find('ul').click(function()
+        $(this).children('ul').children('ul').click(function()
         {
             var listCard = $(this);
             var cocktail = ($(this).find('li').html());
             var searchName = cocktail;
+
             if(cocktail.includes(" ", 0))
             {
                 searchName = cocktail.replace(/ /g, "%20");
             }
+            
             getter(listCard, searchName);
         });
+
+        $('#ingredientCards').unbind('mouseenter mouseleave'); //prevents cursor leaving ingredientsCards to re-call hover function
     });
 }
 function getter(card, name)
 {
     $.getJSON('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=' + name, function(data)
     {   
-        $('#ingredientCards').unbind('mouseenter mouseleave');
-       
-        card.css(
+        $('#ingredientCards').append('<div id=\'blocker\'></div>');
+        $('#ingredientCards').append('<div id=\'popup\'</div>');
+
+        $(card).clone().appendTo('#popup');
+
+        $('#blocker').click(function()
         {
-            'height': '32vw',
-            'transition': '1s',
-            'transform': 'scale(1.5)',
-            'z-index': '5'
-        }).append('<div class=\"grid\"></div>')
+            if($('#popup').find('i')[0].favorited)
+            {
+                $(card).find('i').removeClass('far fa-star').addClass('fas fa-star');
+            }
+            else 
+            {
+                $(card).find('i').removeClass('fas fa-star').addClass('far fa-star');
+            }
+            faveSave();
+            $('#blocker').remove();
+            $('#popup').remove();
+        });
+
+        $('#popup').append('<div class=\"grid\"></div>')
             .append('<p class=\"instructions\">' + data.drinks[0].strInstructions + '</p>')
             .css('overflow', 'auto');
         
@@ -49,7 +63,15 @@ function getter(card, name)
             {
                 measureCall = 'To taste';
             }
-            $('.grid').append('<span>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
+            if(!storageTree.search(storageTree.root, ingredientCall))
+            {
+                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + ' (add to shopping list)</span>').append('<span>' + measureCall + '</span>');
+            }
+            else
+            {
+                $('.grid').append('<span>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
+            }
+            $('.grid').find('span').css('font-size','1.5vw');
             ingredientsNum++;
             setVar(ingredientsNum);
         }
@@ -64,25 +86,41 @@ function getter(card, name)
             ingredientCall = data.drinks[0][ingredient];
             measureCall = data.drinks[0][measure];
         }
+        favoriter();
+        addsToList();
     });
-    favoriter();
-
-    $('body').click(function()
+}
+function addsToList()
+{
+    $('.listAdder').click(function()
     {
-        card.find('.instructions').remove();
-        card.find('.grid').remove();
-    });
-    $(document).on("click", function(event){
-        if($(event.target).closest(card).length != 1)
-        {
-            card.removeAttr('style');
-        }
+        let item = $(this).html();
+        item = item.replace(/add to shopping list/,'').replace(/\(|\)/g, '');
+        shoppingList.push(item);
     });
 }
 function favoriter()
 {
-    $('i').click(function()
+    if($('#popup').find('i').attr('class') == 'fas fa-star')
     {
-        $(this).removeClass('far fa-star').addClass('fas fa-star').css({'color': 'yellow'});
+        $('#popup').find('i')[0].favorited = true;
+    }
+    else
+    {
+        $('#popup').find('i')[0].favorited = false;
+    }
+
+    $('i').click(function()
+    {   
+        if(this.favorited == true)
+        {
+            $(this).removeClass('fas fa-star').addClass('far fa-star').css({'color': 'grey'});
+            this.favorited = false;
+        }
+        else
+        {
+            $(this).removeClass('far fa-star').addClass('fas fa-star').css({'color': 'yellow'});
+            this.favorited = true;
+        }
     });
 }

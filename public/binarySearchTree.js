@@ -3,7 +3,8 @@ class Node
 { 
     constructor(data) 
     { 
-        this.data = data; 
+        this.data = data;
+        this.favorite = false; 
         this.left = null; 
         this.right = null; 
         this.remainingIngredients = 0;
@@ -24,20 +25,23 @@ class BinarySearchTree
     insert(data, val) 
     { 
         // Creating a node and initailising  
-        // with data  
-        var newNode = new Node(data); 
+        // with data
+        if(!this.search(this.root, data)) //check that data is not already there
+        {
+            var newNode = new Node(data); 
+            
+            newNode.ingredientsNum = val;
+            newNode.remainingIngredients = val;
+            // root is null then node will 
+            // be added to the tree and made root. 
+            if(this.root === null) 
+                this.root = newNode; 
+            else
         
-        newNode.ingredientsNum = val;
-        newNode.remainingIngredients = val;
-        // root is null then node will 
-        // be added to the tree and made root. 
-        if(this.root === null) 
-            this.root = newNode; 
-        else
-    
-            // find the correct position in the  
-            // tree and add the node 
-            this.insertNode(this.root, newNode); 
+                // find the correct position in the  
+                // tree and add the node 
+                this.insertNode(this.root, newNode); 
+        }
     } 
     
     // Method to insert a node in a tree 
@@ -149,12 +153,12 @@ class BinarySearchTree
         } 
     
     } 
-    inorder(node) 
+    inorder(node, func) 
     { 
         if(node !== null) 
         { 
             this.inorder(node.left); 
-            console.log(node.data); 
+            func(node); 
             this.inorder(node.right); 
         } 
     } 

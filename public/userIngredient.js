@@ -2,10 +2,9 @@ var loggedInId = window.opener.loggedInId;
 
 $.getJSON('/api/userProfiles/' + loggedInId, function(data)
 {
-    let drinkQ = data.drinkQueue;
+    storageTree.root = data.storageTree.root;
+    drinkQ = data.drinkQueue; 
+    favorites.root = data.favorites.root;
+    shoppingList = data.shoppingList;
     queuePrinter(drinkQ);
 },'json');
-$('#addMore').click(function()
-{
-    window.open('/searchIngredient.html');
-});

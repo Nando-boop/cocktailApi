@@ -31,6 +31,14 @@ const userSchema = new Schema(
     ingredientTree:
     {
         type: Object
+    },
+    favorites:
+    {
+        type: Object
+    },
+    shoppingList:
+    {
+        type: Object
     }
 });
     

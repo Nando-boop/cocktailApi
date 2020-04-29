@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html>
     <head>
-        <title>User Drinks</title>
+        <title>Shopping List</title>
         <meta charset="utf-8">
-        <script src="https://kit.fontawesome.com/5b2a098684.js" crossorigin="anonymous"></script>
+        <link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Satisfy&display=swap">
         <script type='text/javascript' src='/jquery.min.js'></script>
         <script type='text/javascript' src='/binarySearchTree.js'></script>
         <script type='text/javascript' src='/script.js'></script>
-        <script type='text/javascript' src='/ingredientScript.js'></script>
-        <script type='text/javascript' src='/userIngredient.js'></script>
-        <link rel="stylesheet" href="styles.css">
+        <script type='text/javascript' src='/listAdder.js'></script>
+        <link rel="stylesheet" type='text/css' href="/styles.css">
     </head>
     <body>
-        <div id='loader'>
-            <p>Loading...</p>
-        </div>
         <div class='navBar'>
             <a href='index.html'>Logout</a>
             <a href='ingredientUser.html'>My Drinks</a>
@@ -23,7 +19,6 @@
             <a href='shoppingList.html'>Shopping List</a>
         </div>
         <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
-        <h3>Here are the drinks you can make</h3>
-        <ul id='ingredientCards'></ul>
+        <ul id='shoppingList'></ul>
     </body>
 </html>

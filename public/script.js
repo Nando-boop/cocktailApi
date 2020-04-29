@@ -1,22 +1,17 @@
 var drinkQueue = [];
+var favorites = new BinarySearchTree;
 var binaryIngredientTree = new BinarySearchTree;
 var storageTree = new BinarySearchTree;
 var loggedInId = window.opener.loggedInId;
+var drinkQ;
+var shoppingList = [];
 var url = "https://www.thecocktaildb.com/api/json/v1/1";
 
 $(document).ready(function()
 {   
     $('#ingredientSearch').click(function()
-    {           
-        $.get('/api/userProfiles/' + loggedInId, function(data)
-        {
-            let tree = data.storageTree;
-            inorder(tree.root, visit);
-        });
-        $('#ingredientSearch').click(function()
-        {
-            update();
-        });
+    {
+        update();
     });
     //taken from w3 schools
     mybutton = document.getElementById("myBtn");
@@ -31,8 +26,29 @@ $(document).ready(function()
         mybutton.style.display = "none";
     }
     }
-
 });
+function treePrint()
+{
+    $.get('/api/userProfiles/' + loggedInId, function(data)
+    {
+        if(!data.storageTree)
+        {
+            inorder(storageTree.root, putter);
+            inorder(storageTree.root, visit);
+        }
+        else
+        {
+            inorder(data.storageTree.root, putter);
+            var tree = data.storageTree;
+            inorder(tree.root, visit);
+        }
+
+    });
+}
+function putter(node)
+{
+    storageTree.insert(node.data);
+}
 // When the user clicks on the button, scroll to the top of the document
 function topFunction() 
 {
@@ -45,18 +61,22 @@ function update()
 {
     var obj = {
         'drinkQueue': drinkQueue,
-        'ingredientTree': binaryIngredientTree
+        'ingredientTree': binaryIngredientTree,
+        'storageTree': storageTree
     };
 
     $.ajax (
-        {
-            type: "PUT",
-            url: '/api/userProfiles/' + loggedInId,
-            headers: {"Content-Type": "application/json"},
-            data: JSON.stringify(obj),
-            dataType: 'json'
-        }).done(window.open('/ingredientUser.html'));
+    {
+        type: "PUT",
+        url: '/api/userProfiles/' + loggedInId,
+        headers: {"Content-Type": "application/json"},
+        data: JSON.stringify(obj),
+        dataType: 'json'
+    }).done(window.open('/ingredientUser.html'));
 }
+
+var qLen = 0;
+var picLen = 0;
 
 function queuePrinter(queue)
 {
@@ -65,14 +85,16 @@ function queuePrinter(queue)
         while(queue[key] && queue[key].root != null)
         {
             $('#ingredientCards').append('<ul class=\'cards' + key + '\'></ul>');
+            $('.cards' + key).append('<p>Only ' + key + ' more ingredients!</p>');
+
             inorder(queue[key].root, cardPrint);
             break;
         }
     }
 }
-
 function cardPrint(node)
 {
+    qLen++;
     var printUrl = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
     let data = node.data;
 
@@ -80,7 +102,7 @@ function cardPrint(node)
     the search without changing the display name */
     var drinkName = data;
     var searchName = drinkName;
-    
+
     //replaces spaces in drink names to help find photo url
     if(drinkName.includes(" ", 0))
     {
@@ -88,15 +110,28 @@ function cardPrint(node)
     }
 
     printUrl += searchName;
-    
+
     $.getJSON(printUrl, function(data) 
     {
-        $('.cards' + node.remainingIngredients)
-            .append('<ul><i class=\"far fa-star\"></i><img src=\'' + data.drinks[0].strDrinkThumb + '\'><li>' + drinkName + '</li>'
-            + '<p> Only ' + node.remainingIngredients + " more ingredients!</p></ul/");
-    }, 'json');   
+        picLen++;
+        if(node.favorite == true)
+        {
+            $('.cards' + node.remainingIngredients)
+                .append('<ul><i class=\"fas fa-star\"></i><img src=\''+ data.drinks[0].strDrinkThumb + '\'><li>' + drinkName + '</li></ul>');
+            $('.fas fa-star').css({'color': 'yellow'});
+        }
+        else
+        {
+            $('.cards' + node.remainingIngredients)
+                .append('<ul><i class=\"far fa-star\"></i><img src=\''+ data.drinks[0].strDrinkThumb + '\'><li>' + drinkName + '</li></ul>');
+            $('.far fa-star').css({'color': 'grey'});
+        }
+        if(picLen == qLen)
+        {
+            cardSelector();
+        }
+    });
 }
-
 //retrieves and lists possible drinks from searched item
 function getData()
 {
@@ -177,7 +212,7 @@ function inorder(node, func)
         inorder(node.left, func); 
         func(node); 
         inorder(node.right, func); 
-    } 
+    }
 }
 
 function drinkAdder(name, num)
@@ -223,6 +258,7 @@ function queueRemoval(bucket, val)
 }
 function printCards(url)
 {
+    $('#ingredientCards').empty();
     $.getJSON(url, function(data)
     {
         var IngredientsLength = data.drinks.length;
@@ -233,14 +269,17 @@ function printCards(url)
             var drinkName = data.drinks[i].strIngredient1;
             var searchName = drinkName;
 
-            //replaces spaces in drink names to help find photo url
             if(drinkName.includes(" ", 0)){
                 searchName = drinkName.replace(/ /g, "%20");
             }
-            
-            $('#ingredientCards').append('<ul class=\'cards\'><ul>');
-            $('#ingredientCards ul:last').append('<li>' + drinkName + '</li>')
-                .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
+
+            if(!storageTree.root || !storageTree.search(storageTree.root, drinkName))
+            {
+                $('#ingredientCards').append('<ul class=\'cards\'><ul>');
+                $('#ingredientCards ul:last').append('<li>' + drinkName + '</li>')
+                    .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
+            }
+            //replaces spaces in drink names to help find photo url
         }
         selector();
     });
@@ -280,4 +319,54 @@ function ingredientAdder(name)
 function ingredientRemover(name)
 {
     storageTree.remove(name);
+}
+function faveSave()
+{
+    var fav = $('#popup').find('i')[0].favorited;
+    var drink = $('#popup').find('ul').text();
+
+    if(fav)
+    {
+        favorites.insert(drink);
+    }
+    else
+    {
+        favorites.remove(drink);
+    }
+
+    function drinkSearch(node)
+    {
+        if(drink == node.data)
+        {
+            node.favorite = fav;
+        }
+    }
+    for(key in drinkQ)
+    {
+        while(drinkQ[key] && drinkQ[key].root != null)
+        {
+            inorder(drinkQ[key].root, drinkSearch);
+            break;
+        }
+    }
+
+    saveFav();
+}
+function saveFav()
+{
+    console.log(shoppingList);
+    var favObj = {
+        'drinkQueue': drinkQ,
+        'favorites' : favorites,
+        'shoppingList': shoppingList
+    }
+    console.log(favObj);
+    $.ajax (
+    {
+        type: "PUT",
+        url: '/api/userProfiles/' + loggedInId,
+        headers: {"Content-Type": "application/json"},
+        data: JSON.stringify(favObj),
+        dataType: 'json'
+    });
 }

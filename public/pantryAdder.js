@@ -1,17 +1,49 @@
 var loggedInId = window.opener.loggedInId;
-var tree;
+var userTree;
 
 $(document).ready(function()
 {   
-    $.getJSON('/api/userProfiles/' + loggedInId, function(data)
+    pantryPrint();
+    
+    $('#delete').click(function()
     {
-        inorder(data.storageTree.root, printPantry);
+        storageTree.inorder(storageTree.root, deleter);
     });
-    $('#ingredientSearch').click(function()
+    
+    $('#addMore').click(function()
     {
-        update();
+        window.open('/searchIngredient.html');
     });
 });
+function pantryPrint()
+    {
+        $('#ingredientCards').empty();
+        $.getJSON('/api/userProfiles/' + loggedInId, function(data)
+        {
+            inorder(data.storageTree.root, printPantry);
+            userTree = new BinarySearchTree;
+            userTree.root = data.storageTree.root;
+        });
+    }
+function deleter(node)
+{
+    userTree.remove(node.data);
+    storageTree = userTree;
+
+    var obj = {
+        'storageTree': storageTree
+    }
+        
+    $.ajax (
+    {
+        type: "PUT",
+        url: '/api/userProfiles/' + loggedInId,
+        headers: {"Content-Type": "application/json"},
+        data: JSON.stringify(obj),
+        dataType: 'json'
+    });
+    pantryPrint();
+}
 function printPantry(node)
 {
     let name = node.data;
