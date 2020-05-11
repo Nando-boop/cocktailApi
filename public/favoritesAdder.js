@@ -1,14 +1,12 @@
-var loggedInId = window.opener.loggedInId;
-
 $(document).ready(function()
 {   
-    $.getJSON('/api/userProfiles/' + loggedInId, function(data)
-    {
+    // $.getJSON('/api/userProfiles/' + loggedInId, function(data)
+    // {
         $('#ingredientCards').append('<ul class=\'cards\'></ul>');
-        drinkQ = data.drinkQueue;
-        inorder(data.favorites.root, printFaves);
+        drinkQ = drinkQueue;
+        inorder(favorites.root, printFaves);
         cardSelector();
-    });
+    // });
 });
 function printFaves(node)
 {

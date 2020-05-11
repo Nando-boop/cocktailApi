@@ -1,18 +1,16 @@
-var loggedInId = window.opener.loggedInId;
-
 var listUrl = "https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list";
 var ingredUrl = "https://www.thecocktaildb.com/api/json/v1/1/search.php?i=";
 
 $(document).ready(function()
 {
     printCards(listUrl);
-    treePrint();
+    // treePrint();
     
     $('#save').click(function()
     {
         $('#ingredientBox').val('');
         var obj = {};
-        treePrint();
+        inorder(storageTree.root, visit);
         obj['storageTree'] = storageTree;
         
         $.ajax (

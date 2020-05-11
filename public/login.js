@@ -16,6 +16,7 @@ $(document).ready(function()
         loginRemover('signUp', 'Sign Up');
         $('#signUp').click(function()
         {   
+            localStorage.clear();
             let obj = setValues();
             $.ajax (
                 {
@@ -48,9 +49,20 @@ function serverCall(page, userData)
 {
     $.getJSON('/api/userProfiles/login', userData, function(data)
     {
-        loggedInId = data;
-        window.open(page);
-    },'json');
+        localStorage.setItem('loggedInId', data._id);
+        localStorage.setItem('drinkQueue', JSON.stringify(data.drinkQueue));
+        if(data.favorites)
+        {
+            localStorage.setItem('favorites', JSON.stringify(data.favorites));
+        }
+        if(data.shoppingList)
+        {
+            localStorage.setItem('shoppingList', JSON.stringify(data.shoppingList));
+        }
+        localStorage.setItem('storageTree', JSON.stringify(data.storageTree));
+
+        localStorage.setItem('binaryIngredientTree', JSON.stringify(data.ingredientTree));
+    },'json').done(window.open(page,"_top"));
 }
 function loginRemover(action, btn)
 {

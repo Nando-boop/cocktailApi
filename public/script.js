@@ -2,15 +2,31 @@ var drinkQueue = [];
 var favorites = new BinarySearchTree;
 var binaryIngredientTree = new BinarySearchTree;
 var storageTree = new BinarySearchTree;
-var loggedInId = window.opener.loggedInId;
-var drinkQ;
+var loggedInId = localStorage.getItem('loggedInId');
 var shoppingList = [];
+
+if(localStorage.getItem('used'))
+{
+    drinkQueue = JSON.parse(localStorage.getItem('drinkQueue'));
+    storageTree.root = JSON.parse(localStorage.getItem('storageTree'));
+    binaryIngredientTree.root = JSON.parse(localStorage.getItem('binaryIngredientTree'));
+}
+if(localStorage.getItem('shoppingList'))
+{
+    shoppingList = JSON.parse(localStorage.getItem('shoppingList'));
+}
+if(localStorage.getItem('favorites'))
+{
+    favorites.root = JSON.parse(localStorage.getItem('favorites'));
+}
+
 var url = "https://www.thecocktaildb.com/api/json/v1/1";
 
 $(document).ready(function()
 {   
     $('#ingredientSearch').click(function()
     {
+        localStorage.setItem('used', true);
         update();
     });
     //taken from w3 schools
@@ -27,24 +43,33 @@ $(document).ready(function()
     }
     }
 });
-function treePrint()
-{
-    $.get('/api/userProfiles/' + loggedInId, function(data)
-    {
-        if(!data.storageTree)
-        {
-            inorder(storageTree.root, putter);
-            inorder(storageTree.root, visit);
-        }
-        else
-        {
-            inorder(data.storageTree.root, putter);
-            var tree = data.storageTree;
-            inorder(tree.root, visit);
-        }
-
-    });
-}
+// function treePrint()
+// {
+//     // $.get('/api/userProfiles/' + loggedInId, function(data)
+//     // {
+//     //     if(!data.storageTree)
+//     //     {
+//     //         inorder(storageTree.root, putter);
+//     //         inorder(storageTree.root, visit);
+//     //     }
+//     //     else
+//     //     {
+//     //         inorder(data.storageTree.root, putter);
+//     //         var tree = data.storageTree;
+//     //         inorder(tree.root, visit);
+//     //     }
+//     // });
+//         if(!storageTree)
+//         {
+//             inorder(storageTree.root, putter);
+//             inorder(storageTree.root, visit);
+//         }
+//         else
+//         {
+//             inorder(storageTree.root, putter);
+//             inorder(storageTree.root, visit);
+//         }
+// }
 function putter(node)
 {
     storageTree.insert(node.data);
@@ -65,6 +90,10 @@ function update()
         'storageTree': storageTree
     };
 
+    localStorage.setItem('drinkQueue', JSON.stringify(drinkQueue));
+    localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
+    localStorage.setItem('binaryIngredientTree', JSON.stringify(binaryIngredientTree.root));
+
     $.ajax (
     {
         type: "PUT",
@@ -72,7 +101,7 @@ function update()
         headers: {"Content-Type": "application/json"},
         data: JSON.stringify(obj),
         dataType: 'json'
-    }).done(window.open('/ingredientUser.html'));
+    }).done(window.open('/ingredientUser.html', '_top').done());
 }
 
 var qLen = 0;
@@ -293,7 +322,6 @@ function selector()
     });
     $('.cards').click(function()
     {
-        
         if(this.selected)
         {
             $(this).css({'background': 'none', 'box-shadow': 'none'});
@@ -306,6 +334,29 @@ function selector()
             ingredientAdder($(this).text());
             this.selected = true;
         }
+    });
+}
+function selectorDeleter()
+{
+    $('.cards').mousedown(function()
+    {
+        $(this).css('background', 'black');
+    });
+    $('.cards').click(function()
+    {
+        if(this.selected)
+        {
+            $(this).css({'background': 'none', 'box-shadow': 'none'});
+            this.selected = false;
+            ingredientAdder($(this).text());
+        }
+        else
+        {
+            $(this).css({'background': 'grey', 'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' });
+            ingredientRemover($(this).text());
+            this.selected = true;
+        }
+        localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
     });
 }
 function ingredientAdder(name)
@@ -328,12 +379,13 @@ function faveSave()
     if(fav)
     {
         favorites.insert(drink);
+        localStorage.setItem('favorites', JSON.stringify(favorites.root));
     }
-    else
+    else if(favorites.search(favorites.root, drink))
     {
         favorites.remove(drink);
+        localStorage.setItem('favorites', JSON.stringify(favorites.root));
     }
-
     function drinkSearch(node)
     {
         if(drink == node.data)
@@ -341,26 +393,26 @@ function faveSave()
             node.favorite = fav;
         }
     }
-    for(key in drinkQ)
+    for(key in drinkQueue)
     {
-        while(drinkQ[key] && drinkQ[key].root != null)
+        while(drinkQueue[key] && drinkQueue[key].root != null)
         {
-            inorder(drinkQ[key].root, drinkSearch);
+            inorder(drinkQueue[key].root, drinkSearch);
             break;
         }
     }
 
+    localStorage.setItem('drinkQueue', JSON.stringify(drinkQueue));
     saveFav();
 }
 function saveFav()
 {
-    console.log(shoppingList);
     var favObj = {
-        'drinkQueue': drinkQ,
+        'drinkQueue': drinkQueue,
         'favorites' : favorites,
         'shoppingList': shoppingList
     }
-    console.log(favObj);
+    
     $.ajax (
     {
         type: "PUT",
@@ -370,3 +422,175 @@ function saveFav()
         dataType: 'json'
     });
 }
+
+function cardSelector()
+{
+    $('#loader').remove();  //removes loading screen when function called
+
+    $('#ingredientCards').hover(function()
+    {   
+        $(this).children('ul').children('ul').click(function()
+        {
+            var listCard = $(this);
+            var cocktail = ($(this).find('li').html());
+            var searchName = cocktail;
+
+            if(cocktail.includes(" ", 0))
+            {
+                searchName = cocktail.replace(/ /g, "%20");
+            }
+            
+            getter(listCard, searchName);
+        });
+
+        $('#ingredientCards').unbind('mouseenter mouseleave'); //prevents cursor leaving ingredientsCards to re-call hover function
+    });
+}
+function getter(card, name)
+{
+    $.getJSON('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=' + name, function(data)
+    {   
+        $('#ingredientCards').append('<div id=\'blocker\'></div>');
+        $('#ingredientCards').append('<div id=\'popup\'</div>');
+
+        $(card).clone().appendTo('#popup');
+
+        $('#blocker').click(function()
+        {
+            if($('#popup').find('i')[0].favorited)
+            {
+                $(card).find('i').removeClass('far fa-star').addClass('fas fa-star');
+            }
+            else 
+            {
+                $(card).find('i').removeClass('fas fa-star').addClass('far fa-star');
+            }
+            faveSave();
+            $('#blocker').remove();
+            $('#popup').remove();
+        });
+
+        $('#popup').append('<div class=\"grid\"></div>')
+            .append('<p class=\"instructions\">' + data.drinks[0].strInstructions + '</p>')
+            .css('overflow', 'auto');
+        
+        let ingredientsNum;
+        let ingredientCall;
+        let measureCall;
+        setVar(1);
+
+        while(ingredientCall != undefined)
+        {
+            if(measureCall == null)
+            {
+                measureCall = 'To taste';
+            }
+            if(!storageTree.search(storageTree.root, ingredientCall))
+            {
+                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + ' (add to shopping list)</span>').append('<span>' + measureCall + '</span>');
+            }
+            else
+            {
+                $('.grid').append('<span>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
+            }
+            $('.grid').find('span').css('font-size','1.5vw');
+            ingredientsNum++;
+            setVar(ingredientsNum);
+        }
+
+        function setVar(num)
+        {
+            ingredientsNum = num;
+            let ingredient = 'strIngredient';
+            let measure = 'strMeasure';
+            measure += ingredientsNum.toString();
+            ingredient += ingredientsNum.toString();
+            ingredientCall = data.drinks[0][ingredient];
+            measureCall = data.drinks[0][measure];
+        }
+        favoriter();
+        addsToList();
+    });
+}
+function addsToList()
+{
+    $('.listAdder').click(function()
+    {
+        let item = $(this).html();
+        item = item.replace(/add to shopping list/,'').replace(/\(|\)/g, '');
+        shoppingList.push(item);
+        localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+    });
+}
+function favoriter()
+{
+    if($('#popup').find('i').attr('class') == 'fas fa-star')
+    {
+        $('#popup').find('i')[0].favorited = true;
+    }
+    else
+    {
+        $('#popup').find('i')[0].favorited = false;
+    }
+
+    $('i').click(function()
+    {   
+        if(this.favorited == true)
+        {
+            $(this).removeClass('fas fa-star').addClass('far fa-star').css({'color': 'grey'});
+            this.favorited = false;
+        }
+        else
+        {
+            $(this).removeClass('far fa-star').addClass('fas fa-star').css({'color': 'yellow'});
+            this.favorited = true;
+        }
+    });
+}
+function pantryPrint()
+    {
+        
+        // $.getJSON('/api/userProfiles/' + loggedInId, function(data)
+        // {
+        //     inorder(data.storageTree.root, printPantry);
+        // });
+        
+    }
+function deleter(node)
+{
+    $('#ingredientCards').empty();
+
+    var obj = {
+        'storageTree': storageTree
+    }
+        
+    $.ajax (
+    {
+        type: "PUT",
+        url: '/api/userProfiles/' + loggedInId,
+        headers: {"Content-Type": "application/json"},
+        data: JSON.stringify(obj),
+        dataType: 'json'
+    });
+    
+    inorder(storageTree.root, printPantry);
+}
+function printPantry(node)
+{
+    let name = node.data;
+    let searchName = name;
+
+    if(name.includes(" ", 0)){
+        searchName = name.replace(/ /g, "%20");
+    }
+
+    selectorDeleter();
+    $('#ingredientCards').append('<ul class=\'cards\'><ul>');
+    $('#ingredientCards ul:last').append('<li>' + name + '</li>')
+        .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
+    selectorDeleter();
+}
+$("[href$='index.html']").click(function()
+{
+    localStorage.clear();
+});

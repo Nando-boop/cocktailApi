@@ -22,7 +22,8 @@ const userSchema = new Schema(
     },
     drinkQueue: 
     {
-        type: Object
+        type: Object,
+        default: []
     },
     storageTree:
     {

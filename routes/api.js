@@ -28,7 +28,7 @@ router.get('/userProfiles/login', function(req, res, next)
         {   
             req.session.userID = user._id;
             
-            res.send(user._id);
+            res.send(user);
         }
         else{console.log('wrong password');}
     });
