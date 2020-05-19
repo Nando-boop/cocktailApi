@@ -375,14 +375,14 @@ i:hover{
 }
 #addMore {
     position: fixed;
-    margin-top: 4vw;
+    margin-top: 2vw;
     margin-left: 3vw;
     z-index: 10;
 }
 #delete {
     position: fixed;
-    margin-top: 4vw;
-    margin-left: 15vw;
+    margin-top: 2vw;
+    margin-left: 30vw;
     z-index: 10;
 }
 .cards {

@@ -486,9 +486,13 @@ function getter(card, name)
             {
                 measureCall = 'To taste';
             }
-            if(storageTree.search(storageTree.root, ingredientCall) || shoppingList.indexOf(ingredientCall) != -1)
+            if(storageTree.search(storageTree.root, ingredientCall))
             {
                 $('.grid').append('<span>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
+            }
+            else if(shoppingList.indexOf(ingredientCall) != -1)
+            {
+                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + '(in your shopping list)</span>').append('<span>' + measureCall + '</span>');
             }
             else
             {
@@ -518,9 +522,13 @@ function addsToList()
     $('.listAdder').click(function()
     {
         let item = $(this).html();
-        item = item.replace(/add to shopping list/,'').replace(/\(|\)/g, '');
-        shoppingList.push(item);
-        localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+        item = item.replace(/add to shopping list/,'').replace(/in your shopping list/,'').replace(/\(|\)/g, '');
+        if(shoppingList.indexOf(item) == -1)
+        {
+            shoppingList.push(item);
+            $(this).html('<span class=\'listAdder\'>(Added!)</span>');
+            localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+        }
     });
 }
 function favoriter()
