@@ -199,18 +199,25 @@ class BinarySearchTree
     // search for a node with given data 
     search(node, data) 
     { 
+        var nodeTemp;
+        // fixes inconsistent capitalization in api to allow comparisons
+        if(node != null)
+        {
+            nodeTemp = node.data.toLowerCase();
+            data = data.toLowerCase();
+        } 
     // if trees is empty return null 
         if(node === null) 
             return null; 
     
         // if data is less than node's data 
         // move left 
-        else if(data < node.data) 
+        else if(data < nodeTemp) 
             return this.search(node.left, data); 
     
         // if data is less than node's data 
         // move left 
-        else if(data > node.data) 
+        else if(data > nodeTemp) 
             return this.search(node.right, data); 
     
         // if data is equal to the node data  

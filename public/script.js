@@ -5,6 +5,10 @@ var storageTree = new BinarySearchTree;
 var loggedInId = localStorage.getItem('loggedInId');
 var shoppingList = [];
 
+//used to calculate horizontal scroll bar
+var offsetWidth;
+var firstNum = '00';
+
 if(localStorage.getItem('used'))
 {
     drinkQueue = JSON.parse(localStorage.getItem('drinkQueue'));
@@ -24,11 +28,6 @@ var url = "https://www.thecocktaildb.com/api/json/v1/1";
 
 $(document).ready(function()
 {   
-    $('#ingredientSearch').click(function()
-    {
-        localStorage.setItem('used', true);
-        update();
-    });
     //taken from w3 schools
     mybutton = document.getElementById("myBtn");
 
@@ -42,34 +41,33 @@ $(document).ready(function()
         mybutton.style.display = "none";
     }
     }
+
+    document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
+
+    // wait until ingredientCards is populated to run
+    setTimeout(function(){
+
+        // add track and thumb; not draggable to prevent scrolling errors
+        $('#ingredientCards').append('<div id=\'horizontalScrollBar\' draggable=\'false\'></div>').append('<div id=\'horizontalThumb\' draggable=\'false\'></div>');
+
+        let scrollWidth = $('#ingredientCards')[0].scrollWidth;     // total with of element with overflow
+        let clientWidth = $('#ingredientCards')[0].clientWidth;     // width of viewport
+        offsetWidth = scrollWidth - clientWidth;                    // width of element that is offscreen
+
+        // find the highest number of ingredients to add by scroll bar
+        let secondNum = $('#ingredientCards').children('[class]').last()[0].className;
+        let matches = secondNum.match(/(\d+)/);         // extract digit from class name
+        if(matches){
+            matches = '0' + matches[0];                 // coerce number to string with leading 0
+            $('#horizontalScrollBar').append('<p>' + firstNum + '</p>'); // adds lowest number
+            $('#horizontalScrollBar').append('<p>' + matches + '</p>');  // adds highest number  
+        }        
+                             
+        dragger();      
+    }, 500);
+    
 });
-// function treePrint()
-// {
-//     // $.get('/api/userProfiles/' + loggedInId, function(data)
-//     // {
-//     //     if(!data.storageTree)
-//     //     {
-//     //         inorder(storageTree.root, putter);
-//     //         inorder(storageTree.root, visit);
-//     //     }
-//     //     else
-//     //     {
-//     //         inorder(data.storageTree.root, putter);
-//     //         var tree = data.storageTree;
-//     //         inorder(tree.root, visit);
-//     //     }
-//     // });
-//         if(!storageTree)
-//         {
-//             inorder(storageTree.root, putter);
-//             inorder(storageTree.root, visit);
-//         }
-//         else
-//         {
-//             inorder(storageTree.root, putter);
-//             inorder(storageTree.root, visit);
-//         }
-// }
+
 function putter(node)
 {
     storageTree.insert(node.data);
@@ -84,6 +82,7 @@ function topFunction()
 
 function update()
 {
+    localStorage.setItem('used', true);
     var obj = {
         'drinkQueue': drinkQueue,
         'ingredientTree': binaryIngredientTree,
@@ -101,7 +100,7 @@ function update()
         headers: {"Content-Type": "application/json"},
         data: JSON.stringify(obj),
         dataType: 'json'
-    }).done(window.open('/ingredientUser.html', '_top').done());
+    });//.done(window.open('/ingredientUser.html', '_top').done());
 }
 
 var qLen = 0;
@@ -114,7 +113,7 @@ function queuePrinter(queue)
         while(queue[key] && queue[key].root != null)
         {
             $('#ingredientCards').append('<ul class=\'cards' + key + '\'></ul>');
-            $('.cards' + key).append('<p>Only ' + key + ' more ingredients!</p>');
+            //$('.cards' + key).append('<p>Only ' + key + ' more ingredients!</p>');
 
             inorder(queue[key].root, cardPrint);
             break;
@@ -228,7 +227,7 @@ function visit(node)
         data = data.replace(/ /g, "%20");
     }
     var searchInput = data;
-    
+
     url += "/filter.php?i=" + searchInput;
     getData();
     url = "https://www.thecocktaildb.com/api/json/v1/1";
@@ -455,6 +454,7 @@ function getter(card, name)
 
         $(card).clone().appendTo('#popup');
 
+        document.getElementById('ingredientCards').removeEventListener('wheel', scrollHor);
         $('#blocker').click(function()
         {
             if($('#popup').find('i')[0].favorited)
@@ -468,6 +468,7 @@ function getter(card, name)
             faveSave();
             $('#blocker').remove();
             $('#popup').remove();
+            document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
         });
 
         $('#popup').append('<div class=\"grid\"></div>')
@@ -485,13 +486,13 @@ function getter(card, name)
             {
                 measureCall = 'To taste';
             }
-            if(!storageTree.search(storageTree.root, ingredientCall))
+            if(storageTree.search(storageTree.root, ingredientCall) || shoppingList.indexOf(ingredientCall) != -1)
             {
-                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + ' (add to shopping list)</span>').append('<span>' + measureCall + '</span>');
+                $('.grid').append('<span>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
             }
             else
             {
-                $('.grid').append('<span>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
+                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + '(add to shopping list)</span>').append('<span>' + measureCall + '</span>');
             }
             $('.grid').find('span').css('font-size','1.5vw');
             ingredientsNum++;
@@ -547,34 +548,7 @@ function favoriter()
         }
     });
 }
-function pantryPrint()
-    {
-        
-        // $.getJSON('/api/userProfiles/' + loggedInId, function(data)
-        // {
-        //     inorder(data.storageTree.root, printPantry);
-        // });
-        
-    }
-function deleter(node)
-{
-    $('#ingredientCards').empty();
 
-    var obj = {
-        'storageTree': storageTree
-    }
-        
-    $.ajax (
-    {
-        type: "PUT",
-        url: '/api/userProfiles/' + loggedInId,
-        headers: {"Content-Type": "application/json"},
-        data: JSON.stringify(obj),
-        dataType: 'json'
-    });
-    
-    inorder(storageTree.root, printPantry);
-}
 function printPantry(node)
 {
     let name = node.data;
@@ -590,7 +564,137 @@ function printPantry(node)
         .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
     selectorDeleter();
 }
-$("[href$='index.html']").click(function()
+
+// allows horizontal scrolling with mouse wheel
+function scrollHor(e)
 {
-    localStorage.clear();
-});
+    let scrolled = $('#ingredientCards')[0].scrollLeft; // value that has been scrolled past
+    let cards = $('#ingredientCards').children('[class]'); // stores all children with a class attribute
+    let len = cards.length -1;  // -1 to start at index 0
+
+    // styles scrollbar thumb
+    setThumb(scrolled);
+
+    // finds and prints the number of missing ingredients with the scrollbar
+    function setName()
+    {
+        let className = $(cards[i])[0].className;   // finds class name to extract missing number
+        let matches = className.match(/(\d+)/);     // extracts digit from class name
+        
+        if(matches && matches[0] != firstNum)
+        {
+            matches[0];
+            firstNum = '0' + matches[0];            // coerce number to string with leading 0
+        }
+        $('#horizontalScrollBar :first-child').html(firstNum);
+    }
+    // if scrolling up, scroll left
+    if (e.deltaY < 0) 
+    {
+        document.getElementById('ingredientCards').scrollLeft -= 100;
+
+        // start at bottom of list of classes; check if class is in viewport 
+        for(i = 0; i <= len; i++)
+        {
+            if(cards[i].offsetLeft > document.getElementById('ingredientCards').scrollLeft)
+            {
+                i--;
+                setName();
+                break;
+            }
+        }
+    }
+    // else scroll right
+    else 
+    {
+        document.getElementById('ingredientCards').scrollLeft += 100;
+
+        // start at top of list of classes; check if class is in viewport 
+        for(i = len; i >= 0; i--)
+        {
+            if(cards[i].offsetLeft < document.getElementById('ingredientCards').scrollLeft)
+            {
+                setName();
+                break;
+            }
+        }
+    }
+}
+
+// allow dragging of scrollbar
+function dragger() 
+{
+    var pressed, pressX;
+    
+    $(document)
+    .on('mousedown', '#horizontalThumb', function(e) {
+        pressX = e.pageX;       // store the click location
+        pressed = true;
+    })
+    .on('mousemove', function(e) {
+        if (!pressed) return;
+
+        let multiplier = $(window).width()/e.clientX;
+        let difference = e.pageX - pressX;
+
+        document.getElementById('ingredientCards').scrollLeft += (e.pageX - pressX) * multiplier;
+
+        let scrolled = $('#ingredientCards')[0].scrollLeft; // value that has been scrolled past
+        let cards = $('#ingredientCards').children('[class]'); // stores all children with a class attribute
+        let len = cards.length -1;  // -1 to start at index 0
+    
+        // styles scrollbar thumb
+        setThumb(scrolled);
+    
+        // finds and prints the number of missing ingredients with the scrollbar
+        function setName()
+        {
+            let className = $(cards[i])[0].className;   // finds class name to extract missing number
+            let matches = className.match(/(\d+)/);     // extracts digit from class name
+    
+            if(matches[0] != firstNum)
+            {
+                matches[0];
+                firstNum = '0' + matches[0];            // coerce number to string with leading 0
+            }
+            $('#horizontalScrollBar :first-child').html(firstNum);
+        }
+        // if scrolling up, scroll left
+        if (difference < 0) 
+        {
+            // start at bottom of list of classes; check if class is in viewport 
+            for(i = 0; i <= len; i++)
+            {
+                if(cards[i].offsetLeft > document.getElementById('ingredientCards').scrollLeft)
+                {
+                    i--;
+                    setName();
+                    break;
+                }
+            }
+        }
+        // else scroll right
+        else 
+        {
+            // start at top of list of classes; check if class is in viewport 
+            for(i = len; i >= 0; i--)
+            {
+                if(cards[i].offsetLeft < document.getElementById('ingredientCards').scrollLeft)
+                {
+                    setName();
+                    break;
+                }
+            }
+        }
+    })
+    .on('mouseup', function() {
+        pressed = false;
+    });
+};
+// sets location of thumb in scroll bar
+function setThumb(ammountScrolled)
+{
+    $('#horizontalThumb').css({
+        'margin-left': 15/(offsetWidth/ammountScrolled) + 40 + '%'
+    })
+}

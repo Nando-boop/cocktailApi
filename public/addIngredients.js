@@ -4,24 +4,18 @@ var ingredUrl = "https://www.thecocktaildb.com/api/json/v1/1/search.php?i=";
 $(document).ready(function()
 {
     printCards(listUrl);
-    // treePrint();
     
     $('#save').click(function()
     {
         $('#ingredientBox').val('');
-        var obj = {};
+
+        drinkQueue = [];
+        binaryIngredientTree = new BinarySearchTree;
+
         inorder(storageTree.root, visit);
-        obj['storageTree'] = storageTree;
-        
-        $.ajax (
-        {
-            type: "PUT",
-            url: '/api/userProfiles/' + loggedInId,
-            headers: {"Content-Type": "application/json"},
-            data: JSON.stringify(obj),
-            dataType: 'json'
-        });
+
         printCards(listUrl);
+        setTimeout(function(){update();}, 1000);
     });
 
     $('#ingredientBox').keyup(function()
