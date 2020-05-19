@@ -598,7 +598,7 @@ function scrollHor(e)
         {
             if(cards[i].offsetLeft > document.getElementById('ingredientCards').scrollLeft)
             {
-                i--;
+                if(i != 0){i--;}
                 setName();
                 break;
             }
