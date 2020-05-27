@@ -3,6 +3,8 @@
     <head>
         <title>User Drinks</title>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+        <script src="https://kit.fontawesome.com/5b2a098684.js" crossorigin="anonymous"></script>
         <link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Satisfy&display=swap">
         <script type='text/javascript' src='/jquery.min.js'></script>
         <script type='text/javascript' src='/binarySearchTree.js'></script>
@@ -12,10 +14,20 @@
     </head>
     <body>
         <div class='navBar'>
-            <a href='index.html'>Cocktail Helper</a>
+            <a href='index.html'></i>Cocktail Helper</a>
+
+            <a href='ingredientUser.html'><i class="fas fa-glass-martini"></i>
             <a href='ingredientUser.html'>My Drinks</a>
-            <a href='pantry.html'>Pantry</a>
+
+            <a href='pantry.html'><i class="fas fa-door-closed" style='color: var(--text-color2)'></i></a>
+            <a href='pantry.html' style='color: var(--text-color2)'>Pantry</a>
+
+            <button id='mobileButton'><i class="fas fa-plus"></i></button>
+
+            <a href='favorites.html'><i class="fas fa-star"></i></a>
             <a href='favorites.html'>Favorites</a>
+
+            <a href='shoppingList.html'><i class="fas fa-list"></i></a>
             <a href='shoppingList.html'>Shopping List</a>
         </div>
         <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>

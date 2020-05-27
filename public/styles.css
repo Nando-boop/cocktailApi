@@ -1,3 +1,4 @@
+/* color variables */
 :root{
     --background-color: rgba(21, 25, 38, 1);
     --title-color: rgb(8,8,8);
@@ -5,198 +6,77 @@
     --text-color: rgba(101, 195, 216, 1);
     --head-color: rgba(89, 70, 64, 1);
 }
-
+html {
+    width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+}
 body {
     margin: 0;
     background-color: var(--background-color);
     word-wrap: normal;
-    width: 100;
     overflow: scroll;
     -webkit-user-select: none;
 }
 a {
     color: inherit;
-    text-decoration: inherit;
+    text-decoration: none;
+}
+/* landing page */
+.home{
+    background: var(--background-color);
 }
 #title{
     z-index: 10;
-    position: absolute;
     margin: auto;
-    margin-left: 15%;
-    margin-top: 15%;
-    font-size: 12.5vw;
-    width: fit-content;
-    text-align: center;
-    border-radius: 2em;
+    margin-left: 10%;
+    margin-top: 35%;
+    font-size: 14vw;
     color: var(--title-color);
-}
-.fas.fa-chevron-down{
-    font-size: 400%;
-    position: absolute;
-    top: 90%;
-    margin-left: 45%;
-    z-index: 10;
-    color: var(--title-color);
-    animation: fadeIn ease 5s;
-}
-@keyframes fadeIn {
-    0% {
-      opacity:0;
-    }
-    100% {
-      opacity:1;
-    }
-  }
-#backgroundPic1 {
-    object-fit: cover;
-    position: absolute;
-    margin: auto;
-    min-height: 100%;
-    width: 100%;
-}
-.backgroundPic {
-    position: absolute;
-    max-height: 65%;
-    margin-left: 25%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.backgroundPic:first-of-type{
-    margin-left: 5%;
-    margin-top: 15%;
-    border-radius: 1vw;
-    max-width: 40%;
-}
-.backgroundPic1{
-    float: right;
-    margin-right: 5%;
-    margin-top: 15%;
-    border-radius: 1vw;
-    max-width: 40%;
-}
-.gallery{
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8,5vw);
-    grid-gap: 2vw;
-    margin: 2vw;
-}
-.gallery img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 1vw;
-}
-.galleryPic:nth-of-type(1){
-    grid-column-start: 5;
-    grid-column-end: 7;
-    grid-row-start: 1;
-    grid-row-end: 5;
-}
-.galleryPic:nth-of-type(2){
-    grid-column-start: 5;
-    grid-column-end: 9;
-    grid-row-start: 5;
-    grid-row-end: 9;
-}
-.galleryPic:nth-of-type(3){
-    grid-column-start: 7;
-    grid-column-end: 9;
-    grid-row-start: 1;
-    grid-row-end: 5;
-}
-.containPic{
-    position: absolute;
-    min-height: 100%;
-    width: 100%;
-    z-index: 20;
-    background: rgb(8,8,8);
-    background: linear-gradient(0deg, rgba(8,8,8,1), rgba(2,0,36,0) 20%);
-}
-.home{
-    background: var(--background-color);
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 100vh;
-}
-.home p{
-    position: absolute;
-    color: var(--text-color2);
-}
-#firstWords{
-    position: absolute;
-    top: 10%;
-    margin-left: 8%;
-    z-index: 10;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-weight: bold;
-    font-size: 6vw;
-}
-h1 {
     font-family: 'Satisfy', cursive;
-    position: relative;
-    font-size: 4vw;
-    text-shadow: 3px 3px 2px rgb(255, 245, 230);
-    margin: 0;
-    margin-left: 1vw;
-    width: fit-content;
-    text-align: center;
-    border-radius: 2em;
-    color: var(--title-color);
+    text-shadow: .3vw .3vw .2vw rgb(255, 245, 230);
 }
 h2 {
     margin: auto;
     background: rgba(252, 238, 251, 0.69);
-    font-size: 2vw;
-    margin-top: 7vw;
-    padding: 1vw;
-    width: 10%;
+    font-size: 5vw;
+    margin-top: 10vw;
+    padding: 4vw;
+    width: 30%;
     text-align: center;
     border-radius: 2em;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-h2:hover {
-    background: rgb(252, 238, 251, .2);
+h2:first-of-type{
+    margin-top: 20vw;
 }
-h3{
+p {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-weight: bold;
-    font-size: 4vw;
-    color: var(--text-color);
 }
-.titleContainer{
-    float: right;
-    margin-right: 5%;
-    margin-top: 15%;
+.home:last-of-type .containPic{
+    display: inherit;
 }
-.titleContainer1{
-    margin-left: 5%;
-    margin-top: 15%;
-}
-.containPic p{
-    width: 30%;
-    margin-top: 0;
-}
-#endTitle{
-    text-align: center;
-}
+
+/* login info and searchIngredient */
 input {
     background: transparent;
     width: 75%;
-    font-size: 2vw;
+    font-size: 4vw;
 }
+
 h3 {
-    margin: 2vw;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: var(--text-color2);
+    text-align: center;
 }
+
+/* image lists on pantry, mydrinks, and favorites */
 #ingredientCards {
     padding: 0;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: 10%;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: var(--text-color);
     font-weight: bold;
-    font-size: 2vw;
     list-style: none;
     display: flex;
     flex-direction: row;
@@ -217,85 +97,54 @@ h3 {
 }
 #ingredientCards img {
     object-fit: cover;
-    width: 20vw;
-    height: 30vw;
+    width: 70vw;
+    height: 70vh;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 #ingredientCards .cards img {
     box-shadow: none;
 }
-button {
-    padding: 30px;
-}
 #ingredientCards ul ul{
     position: relative;
-    width: 20vw;
-    height: 30vw;
+    width: 70vw;
+    height: 70vh;
     padding: 0;
+    margin-right: 4vw;
     list-style: none;
     background: rgb(251, 248, 252);
-    margin: 1vw;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-#ingredientCards ul :hover{
-    transform: translate(-1vw, -1vw);
-}
-#ingredientCards ul ul :hover{
-    transform: none;
-}
 #ingredientCards ul ul p {
-    font-size: 1vw;
+    font-size: 10vw;
     text-align: left;
     margin: 1vw;
 }
 #ingredientCards ul ul li {
     text-align: center;
-    font-size: 7vw;
     position: absolute;
     bottom: 1vw;
     padding: 0;
     list-style: none;
     width: 100%;
     background-color:  rgba(208, 232, 242, .5);
-    font-size: 3vw;
+    font-size: 10vw;
 }
 #ingredientCards .cards li {
-    font-size: 2vw;
+    font-size: 10vw;
     text-align: center;
     border: none;
 }
-#horizontalScrollBar {
-    position: absolute;
-    display: block;
-    margin-left: 40%;
-    bottom: 2vw;
-    width: 20vw;
-    height: 2vw;
-    background-color: var(--text-color2);
-    border-radius: 1vw;
+#ingredientCards > ul:last-of-type {
+    padding-right: 10%;
 }
-#horizontalThumb {
-    position: absolute;
-    display: block;
-    margin-left: 40%;
-    bottom: 2vw;
-    width: 5vw;
-    height: 2vw;
-    background-color: var(--text-color);
-    border-radius: 1vw;
+
+/* disable horizontal and vertical native scrollbars */
+::-webkit-scrollbar {
+    height: 0;
+    width: 0;
 }
-#horizontalScrollBar p {
-    margin-top: 0;
-    color: var(--text-color);
-}
-#horizontalScrollBar :first-child {
-    float: left;
-    margin-left: -20%;
-}
-#horizontalScrollBar :nth-child(2) {
-    float: right;
-    margin-right: -20%;
-}
+
+/* .grid organizes ingredients in ingredient popup */
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -305,58 +154,77 @@ button {
     font-size: 1vw;
     padding-left: 1vw;
 }
-::-webkit-scrollbar {
-    height: 0;
-    width: 0;
-}
 
+/* navbar on bottom on mobile */
 .navBar {
-    overflow: hidden;
+    color: var(--text-color);
+    position: absolute;
     background-color: var(--head-color);
-    top: 0;
+    bottom: 0%;
     width: 100%;
-    height: 6vw;
+    height: 10vh;
     z-index: 10;
+    display: grid;
+    grid-template-columns: 20vw 20vw 20vw 20vw 20vw;
+    grid-template-rows: 8vw 9vw;
+    align-items: center;
+    justify-items: center;
 }
 .navBar a {
-    font-size: 2vw;
+    font-size: 3vw;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    float: left;
-    display: block;
-    color: whitesmoke;
-    text-align: center;
-    padding: .5vw 6vw;
     text-decoration: none;
 }
-.navBar :first-child{
-    font-family: 'Satisfy', cursive;
-    color: var(--title-color);
-    text-shadow: 3px 3px 2px rgb(255, 245, 230);
-    font-size: 3vw;
-    padding: 1vw;
+.navBar a:nth-of-type(3){
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 2;
 }
-.navBar a:hover {
-    color: black;
+.navBar a:nth-of-type(5){
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 2;
 }
-#myBtn {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed/sticky position */
-    bottom: 20px; /* Place the button at the bottom of the page */
-    right: 30px; /* Place the button 30px from the right */
-    z-index: 99; /* Make sure it does not overlap */
-    border: none; /* Remove borders */
-    outline: none; /* Remove outline */
-    background-color: grey; /* Set a background color */
-    color: white; /* Text color */
-    cursor: pointer; /* Add a mouse pointer on hover */
-    padding: 15px; /* Some padding */
-    border-radius: 10px; /* Rounded corners */
-    font-size: 18px; /* Increase font size */
-  }  
-#myBtn:hover {
-background-color: black; /* Add a dark-grey background on hover */
+.navBar a:nth-of-type(7){
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 2;
+    grid-row-end: 2;
 }
-i {
+.navBar a:nth-of-type(9){
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    grid-row-end: 2;
+}
+
+#mobileButton {
+    outline: none;
+    position: absolute;
+    top: -6.5vh;
+    width: 22vw;
+    height: 22vw;
+    border-radius: 50%;
+    background: var(--text-color2);
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 1;
+}
+#mobileButton i {
+    font-size: 8vw;
+}
+.fas.fa-save, .fas.fa-trash-alt {
+    color: var(--text-color2);
+}
+/* hidden desktop styles */
+#endTitle, .containPic, .navBar >:first-child, #myBtn, #addMore, #delete, #horizontalScrollBar p, #save, #ingredientBox {
+    display: none;
+}
+
+#ingredientCards i {
     position: absolute;
     color: grey;
     top: -1vw;
@@ -365,26 +233,71 @@ i {
     background: lightgray;
     border-radius: 50%;
 }
-i:hover{
+#ingredientCards .fas.fa-star{
     color: yellow;
     background: grey;
 }
-.fas.fa-star{
-    color: yellow;
-    background: grey;
+
+.navBar i {
+    color: var(--text-color);
+    background: none;
+    align-self: end;
+    font-size: 5vw;
 }
-#addMore {
-    position: fixed;
-    margin-top: 2vw;
-    margin-left: 3vw;
-    z-index: 10;
+.navBar a:nth-of-type(2) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    align-self: end;
 }
-#delete {
-    position: fixed;
-    margin-top: 2vw;
-    margin-left: 30vw;
-    z-index: 10;
+.navBar a:nth-of-type(4) {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    align-self: end;
 }
+.navBar a:nth-of-type(6) {
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    align-self: end;
+}
+.navBar .fas.fa-star {
+    color: var(--text-color);
+    background: none;
+}
+.navBar a:nth-of-type(8) {
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    align-self: end;
+}
+
+/* scrolling track for position in list */
+
+#horizontalScrollBar {
+    position: absolute;
+    display: block;
+    bottom: 10vh;
+    left: 0;
+    width: 100vw;
+    height: 1vh;
+    background-color: var(--text-color2);
+}
+#horizontalThumb {
+    position: absolute;
+    bottom: 10vh;
+    left: 0;
+    height: 1vh;
+    background-color: var(--text-color);
+    border-radius: 1vw;
+    width: 0;
+}
+
 .cards {
     margin-top: 3vw;
 }
@@ -401,34 +314,649 @@ i:hover{
     background-color: grey;
     z-index: 11
 }
+
 #blocker{
     position: fixed;
     display: block;
-    top: 2.5vw;
+    left: 0;
+    top: 0;
     height: 100%;
     width: 100%;
+    z-index: 14;
 }
-#popup img{
-    height: 20vw;
-    Width: 20vw;
+
+#popup img {
+    height: 20vh;
+    Width: 40vw;
+    margin-left: 5vw;
+    margin-top: 3vh;
+    margin-bottom: 5vw;
 }
-#popup{
+#popup {
     transform: scale(1.5);
     position: fixed;
-    display: block;
-    overflow: visible;
-    height: 40vw;
-    top: 17vw;
+    height: 40vh;
+    margin-top: 17vh;
     width: 50vw;
-    margin-left: 25vw;
-    margin-right: 25vw;
-    padding-top: 3vw;
+    margin-left: 15vw;
+    padding-top: 3vh;
     z-index: 15;
     background: rgb(251, 248, 252, .9);
+    box-shadow: 0 14px 18px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19);
 }
-#popup ul>*:hover{
-    transform: translate(0);
+#popup p {
+    font-size: 3vw;
+    border-top: solid;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    padding-top: 2vh;
+    text-align: left;
 }
+#popup i, #popup ul li {
+    position: fixed;
+    top: 1vh;
+    left: 1vw;
+}
+#popup ul li {
+    left: 10vw;
+}
+#popup span {
+    font-size: 3vw;
+}
+#popup .grid {
+    border-top: solid;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    padding-top: 2vh;
+}
+#popup .fas.fa-plus-circle, #popup .fas.fa-check-circle {
+    position: relative;
+    margin-left: -4vw;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin-right: 1vw;
+}
+#popup span:nth-of-type(even) {
+    justify-self: end;
+    text-align: right;
+}
+#popup span:nth-of-type(odd){
+    justify-self: start;
+    text-align: left;
+}
+
 #shoppingList{
-    padding-top: 10vw;
+    background: var(--text-color);
+    height: 87vh;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    padding-right: 10vw;
+    margin-top: 0;
+    list-style: none;
+    overflow-y: scroll;
+}
+#shoppingList li {
+    padding: 1vh;
+    margin-bottom: 3vh;
+    border: solid;
+}
+.fas.fa-shopping-cart {
+    color: var(--text-color2);
+}
+
+/* black transparent border inset on images */
+img{
+    border-style: solid;
+    border-width: thick;
+    box-sizing: border-box;
+    border-color: rgba(0,0,0,.9);
+}
+
+/* large phone */
+@media (min-width: 688px){
+    #mobileButton {
+        display: none;
+    }
+    #mobileButton {
+        position: absolute;
+        top: 20vh;
+        left: 40vw;
+    }
+
+    #endTitle, .containPic, .navBar >:first-child, #myBtn, #addMore, #delete, #horizontalScrollBar p, #save, #ingredientBox {
+        display: inherit;
+    }
+    html {
+        overflow: scroll;
+    }
+    /* back to top button */
+    .fas.fa-chevron-down{
+        font-size: 400%;
+        position: absolute;
+        top: 90%;
+        margin-left: 45%;
+        z-index: 10;
+        color: var(--title-color);
+        animation: fadeIn ease 5s;
+    }
+    @keyframes fadeIn {
+        0% {
+        opacity:0;
+        }
+        100% {
+        opacity:1;
+        }
+    }
+
+    /* landing page */
+    #title{
+        position: absolute;
+        margin-left: 15%;
+        margin-top: 45vh;
+        font-size: 12.5vw;
+        width: fit-content;
+        text-align: center;
+        border-radius: 2em;
+    }
+    #backgroundPic1 {
+        object-fit: cover;
+        position: absolute;
+        margin: auto;
+        min-height: 100%;
+        width: 100%;
+    }
+    .backgroundPic {
+        position: absolute;
+        max-height: 65%;
+        margin-left: 25%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .backgroundPic:first-of-type{
+        margin-left: 5%;
+        margin-top: 20vh;
+        border-radius: 1vw;
+        max-width: 50%;
+        height: 30vh;
+    }
+    .backgroundPic1{
+        float: right;
+        margin-right: 5%;
+        margin-top: 20vh;
+        border-radius: 1vw;
+        max-width: 50%;
+        height: 30vh;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .gallery{
+        display: grid;
+        grid-template-columns: repeat(8, 10vw);
+        grid-template-rows: repeat(8, 7vh);
+        grid-gap: 2vw;
+        margin: 2vw;
+    }
+    .gallery img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 1vw;
+    }
+    .galleryPic:nth-of-type(1){
+        grid-column-start: 5;
+        grid-column-end: 7;
+        grid-row-start: 1;
+        grid-row-end: 5;
+    }
+    .galleryPic:nth-of-type(2){
+        grid-column-start: 5;
+        grid-column-end: 9;
+        grid-row-start: 5;
+        grid-row-end: 9;
+    }
+    .galleryPic:nth-of-type(3){
+        grid-column-start: 7;
+        grid-column-end: 9;
+        grid-row-start: 1;
+        grid-row-end: 5;
+    }
+    .containPic{
+        position: absolute;
+        min-height: 100%;
+        width: 100%;
+        z-index: 9;
+        background: rgb(8,8,8);
+        background: linear-gradient(0deg, rgba(8,8,8,1), rgba(2,0,36,0) 20%);
+    }
+    .home{
+        background: var(--background-color);
+        position: relative;
+        width: 100%;
+        height: 70vh;
+    }
+    .home:first-of-type {
+        height: 100vh;
+    }
+    .home p{
+        position: absolute;
+        color: var(--text-color2);
+    }
+    .home h3 {
+        text-align: left;
+    }
+    #firstWords{
+        position: absolute;
+        top: 27vh;
+        margin-left: 8%;
+        z-index: 10;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-weight: bold;
+        font-size: 6vw;
+    }
+    h1 {
+        font-family: 'Satisfy', cursive;
+        position: relative;
+        font-size: 4vw;
+        text-shadow: 3px 3px 2px rgb(255, 245, 230);
+        margin: 0;
+        margin-left: 1vw;
+        width: fit-content;
+        text-align: center;
+        border-radius: 2em;
+        color: var(--title-color);
+    }
+    h2 {
+        font-size: 2vw;
+        margin-top: 7vw;
+        padding: 1vw;
+        width: 10%;
+    }
+    h2:hover {
+        background: rgb(252, 238, 251, .2);
+    }
+    h3 {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-weight: bold;
+        font-size: 5vw;
+        margin: 2vw;
+        margin-top: 10vh;
+    }
+    .titleContainer{
+        float: right;
+        margin-right: 5%;
+        margin-top: 20vh;
+        width: 40vw;
+    }
+    .titleContainer1{
+        margin-left: 5%;
+        margin-top: 22vh;
+    }
+    .containPic p{
+        width: 30%;
+        margin-top: 0;
+        margin-left: 3vw;
+    }
+    #endTitle{
+        text-align: center;
+    }
+    input {
+        font-size: 2vw;
+    }
+
+    /* image lists on pantry, mydrinks, and favorites */
+    #ingredientCards {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    #ingredientCards img, #ingredientCards ul ul {
+        width: 60vw;
+        height: 60vh;
+    }
+    button {
+        padding: 30px;
+    }
+    #ingredientCards ul :hover{
+        transform: translate(-1vw, -1vw);
+    }
+    #ingredientCards ul ul :hover{
+        transform: none;
+    }
+    #ingredientCards ul ul p {
+        text-align: left;
+        margin: 1vw;
+    }
+
+    /* small scrollbar at bottom of page */
+    #horizontalScrollBar {
+        margin-left: 40%;
+        bottom: 2vh;
+        width: 20vw;
+        height: 2vh;
+        border-radius: 1vw;
+    }
+    #horizontalThumb {
+        display: block;
+        margin-left: 40%;
+        bottom: 2vh;
+        width: 5vw;
+        height: 2vh;
+    }
+    #horizontalScrollBar p {
+        margin-top: 0;
+        color: var(--text-color);
+        font-size: 3vw;
+    }
+    #horizontalScrollBar :first-child {
+        float: left;
+        margin-left: -20%;
+    }
+    #horizontalScrollBar :nth-child(2) {
+        float: right;
+        margin-right: -20%;
+    }
+
+    .fas.fa-star{
+        color: yellow;
+        background: grey;
+    }
+    .navBar {
+        top: 0;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: 5vh 5vh;
+    }
+    .navBar a {
+        font-size: 2vw;
+    }
+    .navBar a:first-of-type{
+        font-family: 'Satisfy', cursive;
+        color: var(--title-color);
+        text-shadow: 2px 2px 1px var(--text-color2);
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+        font-size: 5vw;
+    }
+    .navBar i {
+        font-size: 3vw;
+    }
+    .navBar a:nth-of-type(3){
+        grid-column-start: 3;
+        grid-column-end: 4;
+    }
+    .navBar a:nth-of-type(5){
+        grid-column-start: 4;
+        grid-column-end: 5;
+    }
+    .navBar a:nth-of-type(7){
+        grid-column-start: 5;
+        grid-column-end: 6;
+    }
+    .navBar a:nth-of-type(9){
+        grid-column-start: 6;
+        grid-column-end: 7;
+    }
+    .navBar a:nth-of-type(2) {
+        grid-column-start: 3;
+        grid-column-end: 4;
+    }
+    .navBar a:nth-of-type(4) {
+        grid-column-start: 4;
+        grid-column-end: 5;
+    }
+    .navBar a:nth-of-type(6) {
+        grid-column-start: 5;
+        grid-column-end: 6;
+    }
+    .navBar a:nth-of-type(8) {
+        grid-column-start: 6;
+        grid-column-end: 7;
+    }
+
+    #myBtn {
+        display: none; /* Hidden by default */
+        position: fixed; /* Fixed/sticky position */
+        bottom: 20px; /* Place the button at the bottom of the page */
+        right: 30px; /* Place the button 30px from the right */
+        z-index: 99; /* Make sure it does not overlap */
+        border: none; /* Remove borders */
+        outline: none; /* Remove outline */
+        background-color: grey; /* Set a background color */
+        color: white; /* Text color */
+        cursor: pointer; /* Add a mouse pointer on hover */
+        padding: 15px; /* Some padding */
+        border-radius: 10px; /* Rounded corners */
+        font-size: 18px; /* Increase font size */
+    }  
+    #myBtn:hover {
+    background-color: black; /* Add a dark-grey background on hover */
+    }
+
+    #save {
+        margin-left: 3vw;
+    }
+    #ingredientBox {
+        display: inline-block;
+        width: 50vw;
+        margin-left: 6vw;
+        font-size: 3vw;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+    #save, #addMore, #delete {
+        display: inline-block;
+        background-color: var(--text-color2);
+        font-size: 3vw;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+    #addMore {
+        margin-top: 11vh;
+        margin-left: 3vw;
+    }
+    #delete {
+        margin-left: 2vw;
+        margin-top: 11vh;
+    }
+
+    #loader p {
+        text-align: center;
+        padding-top: 30%
+    }
+    #loader {
+        top: 0;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        display: block;
+        background-color: var(--text-color2);
+        z-index: 11;
+        font-size: 10vw;
+    }
+
+    #blocker{
+        position: fixed;
+        display: block;
+        top: 2.5vw;
+        height: 100%;
+        width: 100%;
+    }
+
+    #popup {
+        height: 50vh;
+        margin-top: 10vh;
+        margin-left: 20vw;
+    }
+    #popup img{
+        height: 30vh;
+        width: 40vw;
+    }
+    #popup ul>*:hover{
+        transform: translate(0);
+    }
+    #popup ul li {
+        font-size: 5vw;
+    }
+
+    #shoppingList{
+        margin-top: 10vh;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    #shoppingList li {
+        font-size: 3vw;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+
+    /* tablet */
+    @media (min-width: 1023px){
+        .home h3 {
+            margin-top: 5vh;
+        }
+        h2:first-of-type {
+            margin-top: 10vh;
+        }
+        #save, #addMore, #delete, #ingredientBox{
+            font-size: 2vw;
+        }
+        #ingredientCards img, #ingredientCards ul ul {
+            width: 30vw;
+            height: 50vh;
+        }
+        #ingredientCards .cards li, #ingredientCards ul ul li {
+            font-size: 3vw;
+        }
+        #popup img {
+            margin-left: 10vw;
+        }
+        #popup ul li {
+            font-size: 3vw;
+        }
+        #popup span, #popup p {
+            font-size: 2vw;
+        }
+        #horizontalScrollBar p {
+            font-size: 2vw;
+        }
+
+        /* common monitor */
+        @media (min-width: 1365px) {
+            h3 {
+                font-size: 3vw;
+            }
+            .home {
+                height: 90vh;
+            }
+            .backgroundPic:first-of-type, .backgroundPic1 {
+                height: 50vh;
+            }
+            #save, #addMore, #delete, #ingredientBox{
+                font-size: 1vw;
+            }
+            #save, #addMore, #delete {
+                padding: 1vw;
+            }
+            .navBar {
+                grid-template-columns: repeat(8, 1fr);
+            }
+            .navBar a {
+                font-size: 1vw;
+            }
+            .navBar i {
+                font-size: 2vw;
+            }
+            .navBar a:first-of-type {
+                font-size: 4vw;
+            }
+            .navBar a:nth-of-type(2), .navBar a:nth-of-type(3) {
+                grid-column-start: 5;
+                grid-column-end: 6;
+            }
+            .navBar a:nth-of-type(4), .navBar a:nth-of-type(5) {
+                grid-column-start: 6;
+                grid-column-end: 7;
+            }
+            .navBar a:nth-of-type(6), .navBar a:nth-of-type(7) {
+                grid-column-start: 7;
+                grid-column-end: 8;
+            }
+            .navBar a:nth-of-type(8), .navBar a:nth-of-type(9) {
+                grid-column-start: 8;
+                grid-column-end: 9;
+            }
+            
+            #ingredientCards {
+                margin-bottom: 0;
+            }
+            #ingredientCards img, #ingredientCards ul ul {
+                width: 25vw;
+                height: 60vh;
+            }
+            .cards {
+                margin-top: 0;
+            }
+            #horizontalScrollBar p {
+                font-size: 1vw;
+            }
+            #horizontalScrollBar p:first-of-type {
+                margin-left: -10%;
+            }
+            #horizontalScrollBar :nth-child(2) {
+                margin-right: -10%;
+            }
+
+            #popup {
+                height: 55vh;
+                margin-top: 2.5vh;
+            }
+            #popup img{
+                height: 40vh;
+                width: 35vw;
+                margin-left: 7vw;
+                margin-bottom: 1vh;
+            }
+            #popup span, #popup p {
+                font-size: 1.5vw;
+            }
+            .grid span {
+                padding-left: 0;
+            }
+            #popup .fas.fa-plus-circle, #popup .fas.fa-check-circle {
+                margin-left: -2.5vw;
+            }
+            #shoppingList li {
+                font-size: 2vw;
+            }
+            #shoppingList {
+                padding-right: 10vw;
+                padding-left: 10vw;
+            }
+            #loader {
+                font-size: 5vw;
+            }
+            #loader p {
+                padding-top: 30vh;
+            }
+            #mobileButton {
+                top: 12vh;
+                width: 10vw;
+                height: 10vw;
+                left: 60vw;
+            }
+            #mobileButton i {
+                font-size: 5vw;
+            }
+
+            /* common large monitor size */
+            @media (min-width: 1919px)
+            {
+                .home p {
+                    font-size: 1.5vw;
+                }
+                h3 {
+                    font-size: 5vw;
+                }
+                #popup {
+                    margin-top: -1vh;
+                }
+            }
+        }
+    }
 }

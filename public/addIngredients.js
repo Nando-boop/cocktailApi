@@ -5,17 +5,11 @@ $(document).ready(function()
 {
     printCards(listUrl);
     
-    $('#save').click(function()
+    readyToSave();
+
+    $('.fas.fa-search').click(function()
     {
-        $('#ingredientBox').val('');
-
-        drinkQueue = [];
-        binaryIngredientTree = new BinarySearchTree;
-
-        inorder(storageTree.root, visit);
-
-        printCards(listUrl);
-        setTimeout(function(){update();}, 1000);
+        $('#ingredientBox').css('display', 'inherit');
     });
 
     $('#ingredientBox').keyup(function()
@@ -27,6 +21,11 @@ $(document).ready(function()
         ingredUrl += $(this).val();
         $.getJSON(ingredUrl, function(data)
         {
+            if(data.ingredients == null)
+            {
+                alert('Oops, we didn\'t find anything. Try another search');
+                return;
+            }
             $('#ingredientCards').empty();
                 /*stored in new variable so the name can be adapted for 
                 the search without changing the display name */

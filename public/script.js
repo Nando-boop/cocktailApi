@@ -41,31 +41,33 @@ $(document).ready(function()
         mybutton.style.display = "none";
     }
     }
-
-    document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
-
-    // wait until ingredientCards is populated to run
-    setTimeout(function(){
-
-        // add track and thumb; not draggable to prevent scrolling errors
-        $('#ingredientCards').append('<div id=\'horizontalScrollBar\' draggable=\'false\'></div>').append('<div id=\'horizontalThumb\' draggable=\'false\'></div>');
-
-        let scrollWidth = $('#ingredientCards')[0].scrollWidth;     // total with of element with overflow
-        let clientWidth = $('#ingredientCards')[0].clientWidth;     // width of viewport
-        offsetWidth = scrollWidth - clientWidth;                    // width of element that is offscreen
-
-        // find the highest number of ingredients to add by scroll bar
-        let secondNum = $('#ingredientCards').children('[class]').last()[0].className;
-        let matches = secondNum.match(/(\d+)/);         // extract digit from class name
-        if(matches){
-            matches = '0' + matches[0];                 // coerce number to string with leading 0
-            $('#horizontalScrollBar').append('<p>' + firstNum + '</p>'); // adds lowest number
-            $('#horizontalScrollBar').append('<p>' + matches + '</p>');  // adds highest number  
-        }        
-                             
-        dragger();      
-    }, 500);
     
+    $('#addMore, .fas.fa-plus').click(function()
+    {
+        window.open('/searchIngredient.html', '_top');
+    });
+
+    if($('#ingredientCards')[0])
+    {
+        document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
+        // wait until ingredientCards is populated to run
+        setTimeout(function(){
+
+            // add track and thumb; not draggable to prevent scrolling errors
+            $('#ingredientCards').append('<div id=\'horizontalScrollBar\' draggable=\'false\'></div>').append('<div id=\'horizontalThumb\' draggable=\'false\'></div>');
+    
+            // find the highest number of ingredients to add by scroll bar
+            let secondNum = $('#ingredientCards').children('[class]').last()[0].className;
+            let matches = secondNum.match(/(\d+)/);         // extract digit from class name
+            if(matches){
+                matches = '0' + matches[0];                 // coerce number to string with leading 0
+                $('#horizontalScrollBar').append('<p>' + firstNum + '</p>'); // adds lowest number
+                $('#horizontalScrollBar').append('<p>' + matches + '</p>');  // adds highest number  
+            }        
+                                 
+            dragger();      
+        }, 500);
+    }
 });
 
 function putter(node)
@@ -92,6 +94,12 @@ function update()
     localStorage.setItem('drinkQueue', JSON.stringify(drinkQueue));
     localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
     localStorage.setItem('binaryIngredientTree', JSON.stringify(binaryIngredientTree.root));
+    
+    if(shoppingList)
+    {
+        localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+        obj.shoppingList = shoppingList;
+    }
 
     $.ajax (
     {
@@ -100,7 +108,7 @@ function update()
         headers: {"Content-Type": "application/json"},
         data: JSON.stringify(obj),
         dataType: 'json'
-    });//.done(window.open('/ingredientUser.html', '_top').done());
+    });
 }
 
 var qLen = 0;
@@ -315,48 +323,63 @@ function printCards(url)
 //this function lets you select/deselect cards
 function selector()
 {
-    $('.cards').mousedown(function()
-    {
-        $(this).css('background', 'black');
-    });
     $('.cards').click(function()
     {
         if(this.selected)
         {
-            $(this).css({'background': 'none', 'box-shadow': 'none'});
+            $(this).css({'filter': 'none'});
             this.selected = false;
             ingredientRemover($(this).text());
         }
         else
         {
-            $(this).css({'background': 'grey', 'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' });
+            $(this).css({'filter': 'grayscale(100%) blur(3px)', '-webkit-transition' : '-webkit-filter 500ms linear'});
             ingredientAdder($(this).text());
             this.selected = true;
         }
+        $('#mobileButton').html('<i class="fas fa-save"></i>');
+        $('#mobileButton').css('background', 'var(--text-color)');
+        readyToSave();
     });
 }
 function selectorDeleter()
 {
-    $('.cards').mousedown(function()
-    {
-        $(this).css('background', 'black');
-    });
     $('.cards').click(function()
     {
         if(this.selected)
         {
-            $(this).css({'background': 'none', 'box-shadow': 'none'});
+            $(this).css({'filter': 'none'});
             this.selected = false;
             ingredientAdder($(this).text());
         }
         else
         {
-            $(this).css({'background': 'grey', 'box-shadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' });
+            $(this).css({'filter': 'grayscale(100%) blur(3px)', '-webkit-transition' : '-webkit-filter 500ms linear'});
             ingredientRemover($(this).text());
             this.selected = true;
         }
-        localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
+        $('#mobileButton').html('<i class="fas fa-trash-alt"></i>');
+        $('#mobileButton').css('background', 'var(--text-color)');
+
+        deleterHelper();
     });
+}
+function deleterHelper()
+{
+    $('#delete, .fas.fa-trash-alt').click(function(e, callback)
+    {
+        localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
+
+        $('#ingredientCards').empty();
+
+        inorder(storageTree.root, printPantry);
+
+        drinkQueue = [];
+        binaryIngredientTree = new BinarySearchTree;
+        
+        inorder(storageTree.root, visit);
+        setTimeout(function(){update();}, 500);
+    });  
 }
 function ingredientAdder(name)
 {
@@ -452,6 +475,13 @@ function getter(card, name)
         $('#ingredientCards').append('<div id=\'blocker\'></div>');
         $('#ingredientCards').append('<div id=\'popup\'</div>');
 
+        $('.fas.fa-plus').css({
+            'transform': 'rotate(45deg)',
+            'transition-duration': '1s',
+            'color': 'var(--text-color2)'
+        });
+        $('#mobileButton').css('background', 'var(--text-color)');
+
         $(card).clone().appendTo('#popup');
 
         document.getElementById('ingredientCards').removeEventListener('wheel', scrollHor);
@@ -466,9 +496,21 @@ function getter(card, name)
                 $(card).find('i').removeClass('fas fa-star').addClass('far fa-star');
             }
             faveSave();
+
             $('#blocker').remove();
             $('#popup').remove();
+
             document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
+
+            $('.fas.fa-plus').css({
+                'transform': 'rotate(0deg)',
+                'transition-duration': '1s',
+                'color': 'var(--text-color)'
+            });
+            $('#mobileButton').css({
+                'background': 'var(--text-color2)',
+                'transition-duration': '1s'
+            });
         });
 
         $('#popup').append('<div class=\"grid\"></div>')
@@ -492,13 +534,13 @@ function getter(card, name)
             }
             else if(shoppingList.indexOf(ingredientCall) != -1)
             {
-                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + '(in your shopping list)</span>').append('<span>' + measureCall + '</span>');
+                $('.grid').append('<span class=\'listAdder\'><i class="fas fa-check-circle"></i>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
             }
             else
             {
-                $('.grid').append('<span class=\'listAdder\'>' + ingredientCall + '(add to shopping list)</span>').append('<span>' + measureCall + '</span>');
+                $('.grid').append('<span class=\'listAdder\'><i class="fas fa-plus-circle"></i>' + ingredientCall + '</span>').append('<span>' + measureCall + '</span>');
             }
-            $('.grid').find('span').css('font-size','1.5vw');
+            
             ingredientsNum++;
             setVar(ingredientsNum);
         }
@@ -522,11 +564,13 @@ function addsToList()
     $('.listAdder').click(function()
     {
         let item = $(this).html();
-        item = item.replace(/add to shopping list/,'').replace(/in your shopping list/,'').replace(/\(|\)/g, '');
+
+        item = item.replace(/\<(.*?)\>/g, "").replace(/\(|\)/g, '');
+
         if(shoppingList.indexOf(item) == -1)
         {
             shoppingList.push(item);
-            $(this).html('<span class=\'listAdder\'>(Added!)</span>');
+            $(this).html('<i class="fas fa-check-circle"></i>' + item);
             localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
         }
     });
@@ -542,17 +586,20 @@ function favoriter()
         $('#popup').find('i')[0].favorited = false;
     }
 
-    $('i').click(function()
+    $('#popup').find('i').click(function()
     {   
-        if(this.favorited == true)
+        if(this.className == 'fas fa-star' || this.className == 'far fa-star')
         {
-            $(this).removeClass('fas fa-star').addClass('far fa-star').css({'color': 'grey'});
-            this.favorited = false;
-        }
-        else
-        {
-            $(this).removeClass('far fa-star').addClass('fas fa-star').css({'color': 'yellow'});
-            this.favorited = true;
+            if(this.favorited == true)
+            {
+                $(this).removeClass('fas fa-star').addClass('far fa-star').css({'color': 'grey'});
+                this.favorited = false;
+            }
+            else
+            {
+                $(this).removeClass('far fa-star').addClass('fas fa-star').css({'color': 'yellow'});
+                this.favorited = true;
+            }
         }
     });
 }
@@ -660,7 +707,7 @@ function dragger()
             let className = $(cards[i])[0].className;   // finds class name to extract missing number
             let matches = className.match(/(\d+)/);     // extracts digit from class name
     
-            if(matches[0] != firstNum)
+            if(matches && matches[0] != firstNum)
             {
                 matches[0];
                 firstNum = '0' + matches[0];            // coerce number to string with leading 0
@@ -675,7 +722,7 @@ function dragger()
             {
                 if(cards[i].offsetLeft > document.getElementById('ingredientCards').scrollLeft)
                 {
-                    i--;
+                    if(i != 0){i--;}
                     setName();
                     break;
                 }
@@ -702,7 +749,44 @@ function dragger()
 // sets location of thumb in scroll bar
 function setThumb(ammountScrolled)
 {
-    $('#horizontalThumb').css({
-        'margin-left': 15/(offsetWidth/ammountScrolled) + 40 + '%'
-    })
+    let scrollWidth = $('#ingredientCards')[0].scrollWidth;     // total with of element with overflow
+    let clientWidth = $('#ingredientCards')[0].clientWidth;     // width of viewport
+    offsetWidth = scrollWidth - clientWidth;                    // width of element that is offscreen
+    
+    // thumb on small screen fills track from left to right; large screen thumb moves
+    if(ammountScrolled > 0)
+    {
+        if($(window).width() > 760)
+        {
+            $('#horizontalThumb').css({
+                'margin-left': 15/(offsetWidth/ammountScrolled) + 40 + '%'
+            });
+        }
+        else 
+        {
+            $('#horizontalThumb').css({
+                'width': (ammountScrolled/offsetWidth) * 100 + '%'
+            });
+        }
+    }
+}
+
+function readyToSave()
+{
+    $('#save, .fas.fa-save').click(function()
+    {
+        $('#ingredientBox').val('');
+
+        drinkQueue = [];
+        binaryIngredientTree = new BinarySearchTree;
+
+        inorder(storageTree.root, visit);
+
+        printCards(listUrl);
+
+        $('#mobileButton').html('<i class="fas fa-search"></i>');
+        $('#mobileButton').css('background', 'var(--text-color2)');
+
+        setTimeout(function(){update();}, 1000);
+    });
 }
