@@ -20,6 +20,23 @@ class BinarySearchTree
         this.root = null; 
     } 
 
+    getBalanceFactor(root) {
+        return this.getHeight(root.left) - this.getHeight(root.right);
+     }
+
+    //  get hight of longest branch
+    getHeight(root) {
+        let height = 0;
+        if (root === null || typeof root == "undefined") {
+           height = -1;
+        } 
+        else 
+        {
+           height = Math.max(this.getHeight(root.left), this.getHeight(root.right)) + 1;
+        }
+        return height;
+    }
+
     // helper method which creates a new node to  
     // be inserted and calls insertNode 
     insert(data, val) 
@@ -28,19 +45,24 @@ class BinarySearchTree
         // with data
         if(!this.search(this.root, data)) //check that data is not already there
         {
-            var newNode = new Node(data); 
+            let newNode = new Node(data); 
             
             newNode.ingredientsNum = val;
             newNode.remainingIngredients = val;
+
             // root is null then node will 
             // be added to the tree and made root. 
             if(this.root === null) 
-                this.root = newNode; 
+            {
+                this.root = newNode;
+            }
+ 
             else
-        
+            {
                 // find the correct position in the  
                 // tree and add the node 
                 this.insertNode(this.root, newNode); 
+            }
         }
     } 
     
@@ -49,34 +71,87 @@ class BinarySearchTree
     // to insert a node with a given data  
     insertNode(node, newNode) 
     { 
+        if(node === null)
+        {
+            node = newNode;
+        }
         // if the data is less than the node 
         // data move left of the tree  
-        if(newNode.data < node.data) 
+        else if(newNode.data < node.data) 
         { 
-            // if left is null insert node here 
-            if(node.left === null) 
-                node.left = newNode; 
-            else
-    
-                // if left is not null recurr until  
-                // null is found 
-                this.insertNode(node.left, newNode);  
+            node.left = this.insertNode(node.left, newNode);
+            
+            // the tree will rotate if the balance factor is greater than 1
+            if(node.left !== null && this.getBalanceFactor(node) > 1)
+            {
+                if(newNode.data > node.left.data)
+                {
+                    node = this.rotationLL(node);
+                }
+                else
+                {
+                    node = this.rotationLR(node);
+                }
+            }
         } 
     
         // if the data is more than the node 
         // data move right of the tree  
-        else
+        else if (newNode.data > node.data)
         { 
-            // if right is null insert node here 
-            if(node.right === null) 
-                node.right = newNode; 
-            else
-    
-                // if right is not null recurr until  
-                // null is found 
-                this.insertNode(node.right,newNode); 
-        } 
+            node.right = this.insertNode(node.right, newNode);
+
+            // the tree will rotate if the balance factor is less than 1
+            if(node.right !== null && this.getBalanceFactor(node) < -1)
+            {
+                if(newNode.data > node.right.data)
+                {
+                    node = this.rotationRR(node);
+                }
+                else
+                {
+                    node = this.rotationRL(node);
+                }
+            }
+        }
+        return node;
     } 
+
+    rotationLL(node)
+    {
+        let temp = node.left;
+        
+        if(temp !== null)
+        {
+            node.left = temp.right;
+            temp.right = node;
+        }
+ 
+        return temp;
+    }
+    rotationRR(node) 
+    {
+        let temp = node.right;
+
+        if(temp !== null)
+        {
+            node.right = temp.left;
+            temp.left = node;
+        }
+
+        return temp;
+    }
+    rotationLR(node) 
+    {
+        node.left = this.rotationRR(node.left);
+        return this.rotationLL(node);
+    }
+    rotationRL(node) 
+    {
+        node.right = this.rotationLL(node.right);
+        return this.rotationRR(node);
+    }
+
     // helper method that calls the  
     // removeNode with a given data 
     setVal(num)
@@ -153,6 +228,7 @@ class BinarySearchTree
         } 
     
     } 
+
     inorder(node, func) 
     { 
         if(node !== null) 
