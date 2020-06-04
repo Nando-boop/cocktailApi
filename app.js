@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const parseurl = require('parseurl')
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
-const uri = "mongodb+srv://macieljonathan:Peanut90@cluster0-ehkbv.mongodb.net/userDB?retryWrites=true&w=majority";
+const password;
+const uri = "mongodb+srv://macieljonathan:" + password + "@cluster0-ehkbv.mongodb.net/userDB?retryWrites=true&w=majority";
 const cors = require('cors');
 
 //set up express app
