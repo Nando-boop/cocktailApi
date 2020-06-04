@@ -48,8 +48,7 @@ class BinarySearchTree
             let newNode = new Node(data); 
             
             newNode.ingredientsNum = val;
-            newNode.remainingIngredients = val;
-
+            newNode.remainingIngredients = --val;
             // root is null then node will 
             // be added to the tree and made root. 
             if(this.root === null) 
@@ -61,7 +60,7 @@ class BinarySearchTree
             {
                 // find the correct position in the  
                 // tree and add the node 
-                this.insertNode(this.root, newNode); 
+                this.root = this.insertNode(this.root, newNode); 
             }
         }
     } 
@@ -282,7 +281,7 @@ class BinarySearchTree
             nodeTemp = node.data.toLowerCase();
             data = data.toLowerCase();
         } 
-    // if trees is empty return null 
+        // if tree is empty return null 
         if(node === null) 
             return null; 
     
@@ -291,8 +290,8 @@ class BinarySearchTree
         else if(data < nodeTemp) 
             return this.search(node.left, data); 
     
-        // if data is less than node's data 
-        // move left 
+        // if data is greater than node's data 
+        // move right 
         else if(data > nodeTemp) 
             return this.search(node.right, data); 
     
@@ -300,5 +299,5 @@ class BinarySearchTree
         // return node 
         else
             return node; 
-    } 
+    }
 }

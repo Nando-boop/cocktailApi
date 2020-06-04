@@ -1,10 +1,10 @@
 /* color variables */
 :root{
-    --background-color: rgba(21, 25, 38, 1);
-    --title-color: rgb(8,8,8);
-    --text-color2: rgba(208, 232, 242, 1);
-    --text-color: rgba(101, 195, 216, 1);
-    --head-color: rgba(89, 70, 64, 1);
+    --background-color: #D9D9D9;
+    --title-color: black;
+    --text-color2: rgb(134, 134, 134);
+    --text-color: rgb(0, 8, 15);
+    --head-color: rgb(40, 82, 94);
 }
 html {
     width: 100%;
@@ -13,10 +13,11 @@ html {
 }
 body {
     margin: 0;
-    background-color: var(--background-color);
+    background: var(--background-color);
     word-wrap: normal;
     overflow: scroll;
     -webkit-user-select: none;
+    min-height: 100vh;
 }
 a {
     color: inherit;
@@ -38,7 +39,7 @@ a {
 }
 h2 {
     margin: auto;
-    background: rgba(252, 238, 251, 0.69);
+    background: var(--text-color2);
     font-size: 5vw;
     margin-top: 10vw;
     padding: 4vw;
@@ -63,16 +64,25 @@ input {
     width: 75%;
     font-size: 4vw;
 }
-
+#ingredientBox {
+    margin-left: 12.5vw;
+}
 h3 {
-    color: var(--text-color2);
+    color: var(--text-color);
     text-align: center;
 }
-
+#signUp, #logIn, #username, #password {
+    background: var(--text-color2);
+}
+::placeholder {
+    color: var(--text-color);
+}
 /* image lists on pantry, mydrinks, and favorites */
 #ingredientCards {
     padding: 0;
     padding-left: 10%;
+    padding-top: 16px;
+    margin-top: 0;
     text-align: center;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: var(--text-color);
@@ -112,7 +122,6 @@ h3 {
     margin-right: 4vw;
     list-style: none;
     background: rgb(251, 248, 252);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 #ingredientCards ul ul p {
     font-size: 10vw;
@@ -137,7 +146,9 @@ h3 {
 #ingredientCards > ul:last-of-type {
     padding-right: 10%;
 }
-
+#ingredientCards i {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 /* disable horizontal and vertical native scrollbars */
 ::-webkit-scrollbar {
     height: 0;
@@ -157,7 +168,7 @@ h3 {
 
 /* navbar on bottom on mobile */
 .navBar {
-    color: var(--text-color);
+    color: var(--text-color2);
     position: absolute;
     background-color: var(--head-color);
     bottom: 0%;
@@ -217,7 +228,7 @@ h3 {
     font-size: 8vw;
 }
 .fas.fa-save, .fas.fa-trash-alt {
-    color: var(--text-color2);
+    color: var(--text-color);
 }
 /* hidden desktop styles */
 #endTitle, .containPic, .navBar >:first-child, #myBtn, #addMore, #delete, #horizontalScrollBar p, #save, #ingredientBox {
@@ -239,7 +250,7 @@ h3 {
 }
 
 .navBar i {
-    color: var(--text-color);
+    color: var(--text-color2);
     background: none;
     align-self: end;
     font-size: 5vw;
@@ -266,8 +277,11 @@ h3 {
     align-self: end;
 }
 .navBar .fas.fa-star {
-    color: var(--text-color);
+    color: var(--text-color2);
     background: none;
+}
+.navBar .fas.fa-plus, .fas.fa-search {
+    color: var(--text-color);
 }
 .navBar a:nth-of-type(8) {
     grid-column-start: 5;
@@ -387,7 +401,7 @@ h3 {
 }
 
 #shoppingList{
-    background: var(--text-color);
+    background: var(--background-color);
     height: 87vh;
     padding-top: 3vh;
     padding-bottom: 3vh;
@@ -397,6 +411,7 @@ h3 {
     overflow-y: scroll;
 }
 #shoppingList li {
+    background: var(--text-color2);
     padding: 1vh;
     margin-bottom: 3vh;
     border: solid;
@@ -525,7 +540,7 @@ img{
         width: 100%;
         z-index: 9;
         background: rgb(8,8,8);
-        background: linear-gradient(0deg, rgba(8,8,8,1), rgba(2,0,36,0) 20%);
+        background: linear-gradient(0deg, rgba(8,8,8,1), rgba(2,0,36,0) 15%);
     }
     .home{
         background: var(--background-color);
@@ -569,9 +584,6 @@ img{
         margin-top: 7vw;
         padding: 1vw;
         width: 10%;
-    }
-    h2:hover {
-        background: rgb(252, 238, 251, .2);
     }
     h3 {
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -820,6 +832,9 @@ img{
             width: 30vw;
             height: 50vh;
         }
+        #ingredientCards ul ul, #ingredientCards ul ul li {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
         #ingredientCards .cards li, #ingredientCards ul ul li {
             font-size: 3vw;
         }
@@ -947,11 +962,20 @@ img{
             /* common large monitor size */
             @media (min-width: 1919px)
             {
+                #backgroundPic1 {
+                    height: 100vh;
+                }
+                #ingredientCards {
+                    padding-top: 30px;
+                }
+                .navBar a:first-of-type {
+                    font-size: 3.5vw;
+                }
                 .home p {
                     font-size: 1.5vw;
                 }
                 h3 {
-                    font-size: 5vw;
+                    font-size: 4vw;
                 }
                 #popup {
                     margin-top: -1vh;

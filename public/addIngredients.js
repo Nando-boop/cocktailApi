@@ -4,9 +4,7 @@ var ingredUrl = "https://www.thecocktaildb.com/api/json/v1/1/search.php?i=";
 $(document).ready(function()
 {
     printCards(listUrl);
-    
     readyToSave();
-
     $('.fas.fa-search').click(function()
     {
         $('#ingredientBox').css('display', 'inherit');
@@ -18,31 +16,34 @@ $(document).ready(function()
         {
             printCards(listUrl);
         }
-        ingredUrl += $(this).val();
-        $.getJSON(ingredUrl, function(data)
+        else
         {
-            if(data.ingredients == null)
+            ingredUrl += $(this).val();
+            $.getJSON(ingredUrl, function(data)
             {
-                alert('Oops, we didn\'t find anything. Try another search');
-                return;
-            }
-            $('#ingredientCards').empty();
-                /*stored in new variable so the name can be adapted for 
-                the search without changing the display name */
-
-                var drinkName = data.ingredients[0].strIngredient;
-                var searchName = drinkName;
-
-                //replaces spaces in drink names to help find photo url
-                if(drinkName.includes(" ", 0)){
-                    searchName = drinkName.replace(/ /g, "%20");
+                if(data.ingredients == null)
+                {
+                    alert('Oops, we didn\'t find anything. Try another search');
+                    return;
                 }
-                
-                $('#ingredientCards').append('<ul class=\'cards\'><ul>');
-                $('#ingredientCards ul:last').append('<li>' + drinkName + '</li>')
-                    .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
-            selector();
-        });
-        ingredUrl = "https://www.thecocktaildb.com/api/json/v1/1/search.php?i=";
+                $('#ingredientCards').empty();
+                    /*stored in new variable so the name can be adapted for 
+                    the search without changing the display name */
+    
+                    var drinkName = data.ingredients[0].strIngredient;
+                    var searchName = drinkName;
+    
+                    //replaces spaces in drink names to help find photo url
+                    if(drinkName.includes(" ", 0)){
+                        searchName = drinkName.replace(/ /g, "%20");
+                    }
+                    
+                    $('#ingredientCards').append('<ul class=\'cards\'><ul>');
+                    $('#ingredientCards ul:last').append('<li>' + drinkName + '</li>')
+                        .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
+                selector();
+            });
+            ingredUrl = "https://www.thecocktaildb.com/api/json/v1/1/search.php?i=";
+        }
     });
 });

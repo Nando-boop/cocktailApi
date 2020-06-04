@@ -1,7 +1,17 @@
-var drinkQueue = [];
+/* ========================================================================================================================================================
+BinarySearchTree class is an AVL self balancing tree.
+
+variable usage:
+favorites - a tree that stores the favorited drinks.
+binaryIngredientTree - stores all drinks.
+storageTree - stores user added ingredients.
+shoppingList - array of ingredients; removal updates other variables with selected ingredient.
+
+======================================================================================================================================================== */
 var favorites = new BinarySearchTree;
 var binaryIngredientTree = new BinarySearchTree;
 var storageTree = new BinarySearchTree;
+var tempTree = new BinarySearchTree;
 var loggedInId = localStorage.getItem('loggedInId');
 var shoppingList = [];
 
@@ -11,7 +21,6 @@ var firstNum = '00';
 
 if(localStorage.getItem('used'))
 {
-    drinkQueue = JSON.parse(localStorage.getItem('drinkQueue'));
     storageTree.root = JSON.parse(localStorage.getItem('storageTree'));
     binaryIngredientTree.root = JSON.parse(localStorage.getItem('binaryIngredientTree'));
 }
@@ -47,6 +56,10 @@ $(document).ready(function()
         window.open('/searchIngredient.html', '_top');
     });
 
+    scrollBarAdder();
+});
+function scrollBarAdder() 
+{
     if($('#ingredientCards')[0])
     {
         document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
@@ -68,8 +81,7 @@ $(document).ready(function()
             dragger();      
         }, 500);
     }
-});
-
+}
 function putter(node)
 {
     storageTree.insert(node.data);
@@ -85,13 +97,12 @@ function topFunction()
 function update()
 {
     localStorage.setItem('used', true);
+
     var obj = {
-        'drinkQueue': drinkQueue,
         'ingredientTree': binaryIngredientTree,
         'storageTree': storageTree
     };
 
-    localStorage.setItem('drinkQueue', JSON.stringify(drinkQueue));
     localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
     localStorage.setItem('binaryIngredientTree', JSON.stringify(binaryIngredientTree.root));
     
@@ -109,25 +120,12 @@ function update()
         data: JSON.stringify(obj),
         dataType: 'json'
     });
+    $('* #loader').remove();
 }
 
 var qLen = 0;
 var picLen = 0;
 
-function queuePrinter(queue)
-{
-    for(key in queue)
-    {
-        while(queue[key] && queue[key].root != null)
-        {
-            $('#ingredientCards').append('<ul class=\'cards' + key + '\'></ul>');
-            //$('.cards' + key).append('<p>Only ' + key + ' more ingredients!</p>');
-
-            inorder(queue[key].root, cardPrint);
-            break;
-        }
-    }
-}
 function cardPrint(node)
 {
     qLen++;
@@ -168,130 +166,131 @@ function cardPrint(node)
         }
     });
 }
-//retrieves and lists possible drinks from searched item
-function getData()
-{
-    $.getJSON(url, function(result)
-    {
-        let length = result.drinks.length;
-        for(i=0; i<length; i++)
-        {
-            getIngredients(result.drinks[i].strDrink);
-        }
-    });
-}
 
-function drinkDecrement(drink)
+async function visit(node, func)
 {
-    let searchedNode = binaryIngredientTree.search(binaryIngredientTree.root, drink);
-    
-    if(searchedNode != null)
+    if(node.data)
     {
-        queueRemoval(searchedNode.remainingIngredients, drink);
-        listMaker(searchedNode.remainingIngredients, drink);
-        searchedNode.remainingIngredients--;
+        var data = node.data;
     }
-}
-
-function getIngredients(data)
-{
-    let dataSearch = data;
-
-    if(data.includes(" ", 0)){
-        dataSearch = data.replace(/ /g, "%20");
+    else
+    {
+        data = node;
     }
     
-    url += "/search.php?s=" + dataSearch;
-    
-    $.getJSON(url, function(result)
-    {
-        let ingredientsNum;
-        let ingredientCall;
-        setVar(1);
-
-        while(ingredientCall != undefined)
-        {
-            ingredientsNum++;
-            setVar(ingredientsNum);
-        }
-
-        drinkAdder(result.drinks[0].strDrink, ingredientsNum);
-
-        function setVar(num)
-        {
-            ingredientsNum = num;
-            let ingredient = 'strIngredient';
-            ingredient += ingredientsNum.toString();
-            ingredientCall = result.drinks[0][ingredient];
-        }
-    });
-    url = "https://www.thecocktaildb.com/api/json/v1/1";
-}
-
-function visit(node)
-{
-    let data = node.data
     if(data.includes(" ", 0)){
         data = data.replace(/ /g, "%20");
     }
     var searchInput = data;
-
-    url += "/filter.php?i=" + searchInput;
-    getData();
     url = "https://www.thecocktaildb.com/api/json/v1/1";
+    url += "/filter.php?i=" + searchInput;
+
+    let results = await fetch(url, {
+        method: 'get',
+    }).then(function(response) {
+        return response.json();
+    }).then(async function(data) {
+        var arr1 = data.drinks;
+        const promises = arr1.map(function(val) 
+        {
+            data = val.strDrink;
+
+            let dataSearch = data;
+
+            if(data.includes(" ", 0))
+            {
+                dataSearch = data.replace(/ /g, "%20");
+            }
+            url = "https://www.thecocktaildb.com/api/json/v1/1";
+            url += "/search.php?s=" + dataSearch;
+            
+            return fetch(url).then(function(response) {
+                return response.json();
+            }).then(async function (data) {
+                let ingredientsNum;
+                let ingredientCall;
+                setVar(1);
+            
+                while(ingredientCall != undefined)
+                {
+                    ingredientsNum++;
+                    setVar(ingredientsNum);
+                }
+                ingredientsNum--;
+                const result2 = await func(data.drinks[0].strDrink, ingredientsNum);
+                return result2;
+                function setVar(num)
+                {
+                    ingredientsNum = num;
+                    let ingredient = 'strIngredient';
+                    ingredient += ingredientsNum.toString();
+                    ingredientCall = data.drinks[0][ingredient];
+                }
+                });
+        }) 
+        await Promise.all(promises);  
+    });
+    return results;
+}
+
+var pendingRecursion = 0;
+
+async function inorderAsync(node, func, action) 
+{ 
+    if(node !== null) 
+    {    
+        pendingRecursion++;
+    
+        inorderAsync(node.left, func, action);
+        await func(node, action);
+        inorderAsync(node.right, func, action);
+        
+        if(--pendingRecursion == 0)
+        {
+            update();
+        }
+    }
 }
 
 function inorder(node, func) 
 { 
     if(node !== null) 
     { 
-        inorder(node.left, func); 
-        func(node); 
-        inorder(node.right, func); 
+        inorder(node.left, func);
+        func(node);
+        inorder(node.right, func);
     }
 }
 
-function drinkAdder(name, num)
+// adds ingredient to ingredient tree if not there, then calls functions to update drink queue
+async function drinkAdder(name, num)
 {
     let searchedNode = binaryIngredientTree.search(binaryIngredientTree.getRootNode(), name)
-
-    if(searchedNode == null)
+    
+    if(searchedNode === null)
     {
-        binaryIngredientTree.insert(name, num-1);
-        listMaker(num, name);
-        drinkDecrement(name);
+        binaryIngredientTree.insert(name, num);
     }
     else
     {
-        listMaker(num, name);
-        drinkDecrement(name);
+        searchedNode.remainingIngredients--;
     }
+    return Promise.resolve();
 };
-
-function listMaker(bucket, val)
-{
-    bucket--;
-    if(!drinkQueue[bucket])
-    {
-        drinkQueue[bucket] = new BinarySearchTree;
-    }
-
-    drinkQueue[bucket].insert(val, bucket);
-}
-
-function drinkRemover(name)
+async function drinkRemover(name, num)
 {
     let searchedNode = binaryIngredientTree.search(binaryIngredientTree.getRootNode(), name)
+    if(searchedNode)
+    {
+        searchedNode.remainingIngredients++;
+        if(searchedNode.remainingIngredients == num)
+        {
+            binaryIngredientTree.remove(name);
+        }
+    }
+    return Promise.resolve();
+};
 
-    queueRemoval(searchedNode.value, name);
-
-    binaryIngredientTree.remove(name);   
-}
-
-function queueRemoval(bucket, val)
-{
-    drinkQueue[bucket].remove(val);
-}
 function printCards(url)
 {
     $('#ingredientCards').empty();
@@ -315,7 +314,6 @@ function printCards(url)
                 $('#ingredientCards ul:last').append('<li>' + drinkName + '</li>')
                     .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
             }
-            //replaces spaces in drink names to help find photo url
         }
         selector();
     });
@@ -333,13 +331,21 @@ function selector()
         }
         else
         {
-            $(this).css({'filter': 'grayscale(100%) blur(3px)', '-webkit-transition' : '-webkit-filter 500ms linear'});
+            $(this).css({'filter': 'grayscale(100%) blur(3px)', '-webkit-transition' : '-webkit-filter 300ms linear'});
             ingredientAdder($(this).text());
             this.selected = true;
         }
-        $('#mobileButton').html('<i class="fas fa-save"></i>');
-        $('#mobileButton').css('background', 'var(--text-color)');
-        readyToSave();
+        // toggle between search and save on mobile button
+        if(tempTree.root)
+        {
+            $('.fas.fa-save').css('display', 'inherit');
+            $('.fas.fa-search').css('display', 'none');
+        }
+        else
+        {
+            $('.fas.fa-search').css('display', 'inherit');
+            $('.fas.fa-save').css('display', 'none');
+        }
     });
 }
 function selectorDeleter()
@@ -350,49 +356,81 @@ function selectorDeleter()
         {
             $(this).css({'filter': 'none'});
             this.selected = false;
-            ingredientAdder($(this).text());
+            ingredientAdderDelete($(this).text());
         }
         else
         {
-            $(this).css({'filter': 'grayscale(100%) blur(3px)', '-webkit-transition' : '-webkit-filter 500ms linear'});
-            ingredientRemover($(this).text());
+            $(this).css({'filter': 'grayscale(100%) blur(3px)', '-webkit-transition' : '-webkit-filter 300ms linear'});
+            ingredientRemoverDelete($(this).text());
             this.selected = true;
         }
-        $('#mobileButton').html('<i class="fas fa-trash-alt"></i>');
-        $('#mobileButton').css('background', 'var(--text-color)');
 
-        deleterHelper();
+        if(tempTree.root === null)
+        {
+            $('.fas.fa-plus').css({'display': 'inherit'});
+            $('.fas.fa-trash-alt').css('display', 'none');
+        }
+        else
+        {
+            $('.fas.fa-trash-alt').css({'display': 'inherit'});
+            $('.fas.fa-plus').css('display', 'none');
+        }
     });
+    deleterHelper();
+}
+function selectorColorHelper()
+{
+    let obj = {};
+
+    obj.buttonColor = $('#mobileButton').css('background');
+    obj.iconColor = $('#mobileButton i').css('background');
+
+    return obj;
 }
 function deleterHelper()
 {
-    $('#delete, .fas.fa-trash-alt').click(function(e, callback)
+    $('#delete, .fas.fa-trash-alt').click(function()
     {
-        localStorage.setItem('storageTree', JSON.stringify(storageTree.root));
+        $(document.body).append('<div id=\'loader\'><p>Updating...</p></div>');
+        inorderAsync(tempTree.root, visit, drinkRemover);
 
         $('#ingredientCards').empty();
-
         inorder(storageTree.root, printPantry);
 
-        drinkQueue = [];
-        binaryIngredientTree = new BinarySearchTree;
-        
-        inorder(storageTree.root, visit);
-        setTimeout(function(){update();}, 500);
+        tempTree = new BinarySearchTree;
+        selectorDeleter();
     });  
 }
+
 function ingredientAdder(name)
 {
     let searchedNode = storageTree.search(storageTree.getRootNode(), name)
     if(searchedNode == null)
     {
         storageTree.insert(name);
+        tempTree.insert(name);
     }
 }
 function ingredientRemover(name)
 {
     storageTree.remove(name);
+    tempTree.remove(name);
 }
+function ingredientAdderDelete(name)
+{
+    let searchedNode = storageTree.search(storageTree.getRootNode(), name)
+    if(searchedNode == null)
+    {
+        storageTree.insert(name);
+        tempTree.remove(name);
+    }
+}
+function ingredientRemoverDelete(name)
+{
+    storageTree.remove(name);
+    tempTree.insert(name);
+}
+
 function faveSave()
 {
     var fav = $('#popup').find('i')[0].favorited;
@@ -415,22 +453,15 @@ function faveSave()
             node.favorite = fav;
         }
     }
-    for(key in drinkQueue)
-    {
-        while(drinkQueue[key] && drinkQueue[key].root != null)
-        {
-            inorder(drinkQueue[key].root, drinkSearch);
-            break;
-        }
-    }
 
-    localStorage.setItem('drinkQueue', JSON.stringify(drinkQueue));
+    inorder(binaryIngredientTree.root, drinkSearch);
+
+    localStorage.setItem('binaryIngredientTree', JSON.stringify(binaryIngredientTree.root));
     saveFav();
 }
 function saveFav()
 {
     var favObj = {
-        'drinkQueue': drinkQueue,
         'favorites' : favorites,
         'shoppingList': shoppingList
     }
@@ -475,13 +506,19 @@ function getter(card, name)
         $('#ingredientCards').append('<div id=\'blocker\'></div>');
         $('#ingredientCards').append('<div id=\'popup\'</div>');
 
-        $('.fas.fa-plus').css({
-            'transform': 'rotate(45deg)',
-            'transition-duration': '1s',
-            'color': 'var(--text-color2)'
-        });
-        $('#mobileButton').css('background', 'var(--text-color)');
-
+        if($(window).width() < 760)
+        {
+            $('.fas.fa-plus').css({
+                'color': 'var(--text-color2)',
+                '-webkit-text-fill-color': 'var(--text-color2)',
+                'transform': 'rotate(45deg)',
+                'transition-duration': '1s'
+            });
+            $('#mobileButton').css({
+                'background': 'var(--text-color)',
+                'transition-duration': '1s'
+            });
+        }
         $(card).clone().appendTo('#popup');
 
         document.getElementById('ingredientCards').removeEventListener('wheel', scrollHor);
@@ -502,15 +539,19 @@ function getter(card, name)
 
             document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
 
-            $('.fas.fa-plus').css({
-                'transform': 'rotate(0deg)',
-                'transition-duration': '1s',
-                'color': 'var(--text-color)'
-            });
-            $('#mobileButton').css({
-                'background': 'var(--text-color2)',
-                'transition-duration': '1s'
-            });
+            if($(window).width() < 760)
+            {
+                $('#mobileButton').css({
+                    'background': 'var(--text-color2)',
+                    'transition-duration': '1s'                
+                })
+                $('.fas.fa-plus').css({
+                    'color': 'var(--text-color)',
+                    '-webkit-text-fill-color': 'var(--text-color)',
+                    'transform': 'rotate(0deg)',
+                    'transition-duration': '1s'
+                })
+            }
         });
 
         $('#popup').append('<div class=\"grid\"></div>')
@@ -613,11 +654,9 @@ function printPantry(node)
         searchName = name.replace(/ /g, "%20");
     }
 
-    selectorDeleter();
     $('#ingredientCards').append('<ul class=\'cards\'><ul>');
     $('#ingredientCards ul:last').append('<li>' + name + '</li>')
         .append('<img src=https://www.thecocktaildb.com/images/ingredients/' + searchName + '-Medium.png>');
-    selectorDeleter();
 }
 
 // allows horizontal scrolling with mouse wheel
@@ -688,11 +727,10 @@ function dragger()
     })
     .on('mousemove', function(e) {
         if (!pressed) return;
-
-        let multiplier = $(window).width()/e.clientX;
+        
         let difference = e.pageX - pressX;
-
-        document.getElementById('ingredientCards').scrollLeft += (e.pageX - pressX) * multiplier;
+        let multiplier = Math.abs($(window).width()/e.clientX);
+        document.getElementById('ingredientCards').scrollLeft += difference * multiplier;
 
         let scrolled = $('#ingredientCards')[0].scrollLeft; // value that has been scrolled past
         let cards = $('#ingredientCards').children('[class]'); // stores all children with a class attribute
@@ -754,7 +792,7 @@ function setThumb(ammountScrolled)
     offsetWidth = scrollWidth - clientWidth;                    // width of element that is offscreen
     
     // thumb on small screen fills track from left to right; large screen thumb moves
-    if(ammountScrolled > 0)
+    if(ammountScrolled >= 0)
     {
         if($(window).width() > 760)
         {
@@ -767,6 +805,14 @@ function setThumb(ammountScrolled)
             $('#horizontalThumb').css({
                 'width': (ammountScrolled/offsetWidth) * 100 + '%'
             });
+            $('#mobileButton').css({
+                'background': 'linear-gradient(90deg, var(--text-color)' + (((ammountScrolled/offsetWidth) * 100-40) *5) + '%, var(--text-color2)' + (((ammountScrolled/offsetWidth) * 100-40) *5) + '%)'
+            })
+            $('#mobileButton i').css({
+                'background': 'linear-gradient(90deg, var(--text-color2)' + (((ammountScrolled/offsetWidth) * 100-46) *12.5) + '%, var(--text-color)' + (((ammountScrolled/offsetWidth) * 100-46) *12.5) + '%)',
+                '-webkit-background-clip': 'text',
+	            '-webkit-text-fill-color': 'transparent'
+            })
         }
     }
 }
@@ -777,16 +823,15 @@ function readyToSave()
     {
         $('#ingredientBox').val('');
 
-        drinkQueue = [];
-        binaryIngredientTree = new BinarySearchTree;
-
-        inorder(storageTree.root, visit);
+        $(document.body).append('<div id=\'loader\'><p>Updating...</p></div>');
+        inorderAsync(tempTree.root, visit, drinkAdder);
 
         printCards(listUrl);
 
-        $('#mobileButton').html('<i class="fas fa-search"></i>');
-        $('#mobileButton').css('background', 'var(--text-color2)');
+        $('.fas.fa-search').css('display', 'inherit');
+        $('.fas.fa-save').css('display', 'none');
+        scrollBarAdder();
 
-        setTimeout(function(){update();}, 1000);
+        tempTree = new BinarySearchTree;
     });
 }

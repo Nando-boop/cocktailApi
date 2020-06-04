@@ -50,7 +50,6 @@ function serverCall(page, userData)
     $.getJSON('/api/userProfiles/login', userData, function(data)
     {
         localStorage.setItem('loggedInId', data._id);
-        localStorage.setItem('drinkQueue', JSON.stringify(data.drinkQueue));
         if(data.favorites)
         {
             localStorage.setItem('favorites', JSON.stringify(data.favorites));
