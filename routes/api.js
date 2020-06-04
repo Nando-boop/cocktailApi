@@ -8,7 +8,7 @@ const User = require('../models/user');
 //get index
 router.get('/', function(req, res, next)
 {
-    res.redirect('../public/index.html');
+    res.sendFile('../public/index.html');
 });
 
 router.get('/userProfiles/ingredients', function(req, res, next)
