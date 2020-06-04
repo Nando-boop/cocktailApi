@@ -70,6 +70,7 @@ input {
 h3 {
     color: var(--text-color);
     text-align: center;
+    margin-bottom: 0;
 }
 #signUp, #logIn, #username, #password {
     background: var(--text-color2);
