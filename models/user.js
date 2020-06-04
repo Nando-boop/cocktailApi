@@ -20,11 +20,6 @@ const userSchema = new Schema(
         type: String,
         required: [true, "Password field is required"]
     },
-    drinkQueue: 
-    {
-        type: Object,
-        default: []
-    },
     storageTree:
     {
         type: Object

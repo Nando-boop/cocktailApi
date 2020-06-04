@@ -4,13 +4,14 @@ const bodyParser = require('body-parser');
 const parseurl = require('parseurl')
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
+const uri = "mongodb+srv://macieljonathan:Peanut90@cluster0-ehkbv.mongodb.net/userDB?retryWrites=true&w=majority";
 const cors = require('cors');
 
 //set up express app
 const app = express();
 
 //connect to mongodb
-mongoose.connect('mongodb://127.0.0.1/userdb', {useNewUrlParser: true,  useUnifiedTopology: true, useFindAndModify: false});
+mongoose.connect(uri, {useNewUrlParser: true,  useUnifiedTopology: true, useFindAndModify: false});
 mongoose.Promise = global.Promise;
 
 var date = Date.now();
