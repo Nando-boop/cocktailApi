@@ -62,8 +62,8 @@ function scrollBarAdder()
 {
     if($('#ingredientCards')[0])
     {
-        document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
-        document.getElementById('ingredientCards').addEventListener('touchmove', scrollHor);
+        document.getElementById('ingredientCards').addEventListener('wheel', scrollHor, {passive: true});
+        document.getElementById('ingredientCards').addEventListener('touchmove', scrollHor, {passive: true});
         // wait until ingredientCards is populated to run
         setTimeout(function(){
 

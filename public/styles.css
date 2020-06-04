@@ -860,6 +860,9 @@ img{
 
         /* common monitor */
         @media (min-width: 1365px) {
+            #backgroundPic1 {
+                height: 100vh;
+            }
             h3 {
                 font-size: 3vw;
             }
@@ -969,9 +972,6 @@ img{
             /* common large monitor size */
             @media (min-width: 1919px)
             {
-                #backgroundPic1 {
-                    height: 100vh;
-                }
                 #ingredientCards {
                     padding-top: 30px;
                 }
