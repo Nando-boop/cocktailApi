@@ -13,13 +13,15 @@ html {
 }
 body {
     margin: 0;
-    background: var(--head-color);
+    background: var(--background-color);
     word-wrap: normal;
     overflow: scroll;
     -webkit-user-select: none;
     min-height: 100vh;
 }
-
+#mainBody {
+    background: var(--head-color);
+}
 a {
     color: inherit;
     text-decoration: none;
