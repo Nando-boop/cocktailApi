@@ -63,6 +63,7 @@ function scrollBarAdder()
     if($('#ingredientCards')[0])
     {
         document.getElementById('ingredientCards').addEventListener('wheel', scrollHor);
+        document.getElementById('ingredientCards').addEventListener('touchmove', scrollHor);
         // wait until ingredientCards is populated to run
         setTimeout(function(){
 
@@ -699,7 +700,7 @@ function scrollHor(e)
         }
     }
     // else scroll right
-    else 
+    else if(e.deltaY >= 0)
     {
         document.getElementById('ingredientCards').scrollLeft += 100;
 
