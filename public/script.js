@@ -803,14 +803,25 @@ function setThumb(ammountScrolled)
         }
         else 
         {
+            let btnColor = ((ammountScrolled/offsetWidth) * 100-40) *5;
+            let iColor = ((ammountScrolled/offsetWidth) * 100-46) *12.5;
+
+            if(btnColor < 0)
+            {
+                btnColor = 0;
+            }
+            if(iColor < 0)
+            {
+                iColor = 0;
+            }
             $('#horizontalThumb').css({
                 'width': (ammountScrolled/offsetWidth) * 100 + '%'
             });
             $('#mobileButton').css({
-                'background': 'linear-gradient(90deg, var(--text-color)' + (((ammountScrolled/offsetWidth) * 100-40) *5) + '%, var(--text-color2)' + (((ammountScrolled/offsetWidth) * 100-40) *5) + '%)'
+                'background': 'linear-gradient(90deg, var(--text-color)' + (btnColor) + '%, var(--text-color2)' + (btnColor) + '%)'
             })
             $('#mobileButton i').css({
-                'background': 'linear-gradient(90deg, var(--text-color2)' + (((ammountScrolled/offsetWidth) * 100-46) *12.5) + '%, var(--text-color)' + (((ammountScrolled/offsetWidth) * 100-46) *12.5) + '%)',
+                'background': 'linear-gradient(90deg, var(--text-color2)' + (iColor) + '%, var(--text-color)' + (iColor) + '%)',
                 '-webkit-background-clip': 'text',
 	            '-webkit-text-fill-color': 'transparent'
             })
