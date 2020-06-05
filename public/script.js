@@ -800,11 +800,11 @@ function setThumb(ammountScrolled)
             let btnColor = ((ammountScrolled/offsetWidth) * 100-40) *5;
             let iColor = ((ammountScrolled/offsetWidth) * 100-46) *12.5;
 
-            if(btnColor < 0)
+            if(btnColor < 0 || !btnColor)
             {
                 btnColor = 0;
             }
-            if(iColor < 0)
+            if(iColor < 0 || !iColor)
             {
                 iColor = 0;
             }
