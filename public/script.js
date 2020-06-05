@@ -815,6 +815,16 @@ function setThumb(ammountScrolled)
 	            '-webkit-text-fill-color': 'transparent'
             })
         }
+        // allow slide to update after touch release
+        setTimeout(function()
+        {
+            if(ammountScrolled != $('#ingredientCards')[0].scrollLeft)
+            {
+                ammountScrolled = $('#ingredientCards')[0].scrollLeft;
+                setThumb(ammountScrolled);
+            }
+        },100);
+
     }
 }
 
