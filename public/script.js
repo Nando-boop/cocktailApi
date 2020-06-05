@@ -480,24 +480,18 @@ function saveFav()
 function cardSelector()
 {
     $('#loader').remove();  //removes loading screen when function called
+    $('#ingredientCards ul ul').click(function()
+    {
+        var listCard = $(this);
+        var cocktail = ($(this).find('li').html());
+        var searchName = cocktail;
 
-    $('#ingredientCards').hover(function()
-    {   
-        $(this).children('ul').children('ul').click(function()
+        if(cocktail.includes(" ", 0))
         {
-            var listCard = $(this);
-            var cocktail = ($(this).find('li').html());
-            var searchName = cocktail;
-
-            if(cocktail.includes(" ", 0))
-            {
-                searchName = cocktail.replace(/ /g, "%20");
-            }
-            
-            getter(listCard, searchName);
-        });
-
-        $('#ingredientCards').unbind('mouseenter mouseleave'); //prevents cursor leaving ingredientsCards to re-call hover function
+            searchName = cocktail.replace(/ /g, "%20");
+        }
+        
+        getter(listCard, searchName);
     });
 }
 function getter(card, name)
