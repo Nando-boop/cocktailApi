@@ -26,9 +26,10 @@ $(document).ready(function()
                     headers: {"Content-Type": "application/json"},
                     data: JSON.stringify(obj),
                     dataType: 'json',
-                    success: function(obj)
+                    success: function(data)
                     {
-                        serverCall("searchIngredient.html", obj);
+                        localStorage.setItem('loggedInId', data._id);
+                        window.open(page,"_top")
                     }
                 });
         });
