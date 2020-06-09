@@ -13,6 +13,7 @@ $(document).ready(function()
     });
     $('#signUp').click(function()
     {
+        debugger;
         loginRemover('signUp', 'Sign Up');
         $('#signUp').click(function()
         {   

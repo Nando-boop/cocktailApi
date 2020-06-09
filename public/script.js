@@ -65,22 +65,25 @@ function scrollBarAdder()
         document.getElementById('ingredientCards').addEventListener('wheel', scrollHor, {passive: true});
         document.getElementById('ingredientCards').addEventListener('touchmove', scrollHor, {passive: true});
         // wait until ingredientCards is populated to run
-        setTimeout(function(){
+        if($(window).width() > 760)
+        {
+            setTimeout(function(){
 
-            // add track and thumb; not draggable to prevent scrolling errors
-            $('#ingredientCards').append('<div id=\'horizontalScrollBar\' draggable=\'false\'></div>').append('<div id=\'horizontalThumb\' draggable=\'false\'></div>');
-    
-            // find the highest number of ingredients to add by scroll bar
-            let secondNum = $('#ingredientCards').children('[class]').last()[0].className;
-            let matches = secondNum.match(/(\d+)/);         // extract digit from class name
-            if(matches){
-                matches = '0' + matches[0];                 // coerce number to string with leading 0
-                $('#horizontalScrollBar').append('<p>' + firstNum + '</p>'); // adds lowest number
-                $('#horizontalScrollBar').append('<p>' + matches + '</p>');  // adds highest number  
-            }        
-                                 
-            dragger();      
-        }, 500);
+                // add track and thumb; not draggable to prevent scrolling errors
+                $('#ingredientCards').append('<div id=\'horizontalScrollBar\' draggable=\'false\'></div>').append('<div id=\'horizontalThumb\' draggable=\'false\'></div>');
+        
+                // find the highest number of ingredients to add by scroll bar
+                let secondNum = $('#ingredientCards').children('[class]').last()[0].className;
+                let matches = secondNum.match(/(\d+)/);         // extract digit from class name
+                if(matches){
+                    matches = '0' + matches[0];                 // coerce number to string with leading 0
+                    $('#horizontalScrollBar').append('<p>' + firstNum + '</p>'); // adds lowest number
+                    $('#horizontalScrollBar').append('<p>' + matches + '</p>');  // adds highest number  
+                }        
+                                    
+                dragger();      
+            }, 500);
+        }
     }
 }
 function putter(node)
